@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新增公告</title>
+    <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+</head>
+<body>
+    <div>
+        <h1>新增公告</h1>
+        <form id="announcement-form" enctype="multipart/form-data">
+            <label for="title">公告標題:</label>
+            <input type="text" id="title" name="title" required>
+
+            <label for="context">內文:</label>
+            <textarea id="context" name="context" rows="10" required></textarea>
+
+            <label for="image">封面縮圖:</label>
+            <input type="file" id="image" name="image" accept="" required>
+
+            <label for="timeOn">上架時間:</label>
+            <input type="datetime-local" id="timeOn" name="timeOn" required>
+
+            <label for="timeOff">下架時間:</label>
+            <input type="datetime-local" id="timeOff" name="timeOff" required>
+
+            <label for="">超連結:</label>
+            <input type="text">
+
+            <button type="submit">提交</button>
+        </form>
+    </div>
+    <script>
+        CKEDITOR.replace('context');
+    </script>
+</body>
+</html>
