@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>官方網站 - 公告列表</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .announcement {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .announcement h2 {
+            margin-top: 0;
+        }
+        .announcement img {
+            max-width: 100px;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .pagination button {
+            margin: 0 2px;
+            padding: 5px 10px;
+            border: none;
+            background-color: #e0e0e0;
+            cursor: pointer;
+            color: #333;
+        }
+        .pagination button:hover {
+            background-color: #c0c0c0;
+        }
+        .pagination .current-page {
+            font-weight: bold;
+            background-color: #004085;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">官方網站</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">首頁 <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">公告</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">關於我們</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">聯絡我們</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>公告列表</h1>
+        <div id="announcements-container" class="row">
+            <!-- 這裡將動態生成公告內容 -->
+        </div>
+        <div id="pagination" class="pagination">
+            <!-- 這裡將動態生成分頁按鈕 -->
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        
+        function loadAnnouncements(page) {
+            fetch(`http://localhost:3001/api/announcements?page=${page}`)
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById('announcements-container');
+                    container.innerHTML = '';
+
+                    data.announcements.forEach(announcement => {
+                        const colDiv = document.createElement('div');
+                        colDiv.classList.add('col-md-4');
+
+                        const announcementDiv = document.createElement('div');
+                        announcementDiv.classList.add('announcement');
+
+                        const title = document.createElement('h2');
+                        title.textContent = announcement.title;
+                        announcementDiv.appendChild(title);
+
+                        const timeOn = document.createElement('p');
+                        timeOn.textContent = `上架時間: ${announcement.timeOn}`;
+                        announcementDiv.appendChild(timeOn);
+
+                        const timeOff = document.createElement('p');
+                        timeOff.textContent = `下架時間: ${announcement.timeOff}`;
+                        announcementDiv.appendChild(timeOff);
+
+                        const context = document.createElement('p');
+                        context.innerHTML = announcement.context;
+                        announcementDiv.appendChild(context);
+
+                        if (announcement.image) {
+                            const image = document.createElement('img');
+                            image.src = `http://localhost:3001/uploads/${announcement.image}`;
+                            announcementDiv.appendChild(image);
+                        }
+
+                        colDiv.appendChild(announcementDiv);
+                        container.appendChild(colDiv);
+                    });
+
+                    const pagination = document.getElementById('pagination');
+                    pagination.innerHTML = '';
+
+                    for (let i = 1; i <= data.totalPages; i++) {
+                        const button = document.createElement('button');
+                        button.textContent = i;
+                        button.onclick = () => loadAnnouncements(i);
+                        if (i === data.currentPage) {
+                            button.classList.add('current-page');
+                        }
+                        pagination.appendChild(button);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('加載公告時出錯');
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAnnouncements(currentPage);
+        });
+    </script>
+</body>
+</html>
