@@ -78,8 +78,8 @@
 
     <script>
         let currentPage = 1;
-        
-        function loadAnnouncements(page) {
+
+        function loadAnnouncements(page = 1) {
             fetch(`http://localhost:3001/api/announcements?page=${page}`)
                 .then(response => response.json())
                 .then(data => {
@@ -137,6 +137,16 @@
                     alert('加載公告時出錯');
                 });
         }
+
+        // 初始化 SSE 連接
+        const eventSource = new EventSource('http://localhost:3001/api/announcements/events');
+
+        eventSource.onmessage = function(event) {
+            const message = JSON.parse(event.data);
+            if (message.type === 'update-announcement' || message.type === 'new-announcement') {
+                loadAnnouncements(currentPage);
+            }
+        };
 
         document.addEventListener('DOMContentLoaded', function() {
             loadAnnouncements(currentPage);
