@@ -120,3 +120,17 @@ input:checked + .slider {
 input:checked + .slider:before {
     transform: translateX(20px);
 }
+
+/* 公告狀態數字顏色 */
+.status-default {
+    color: black; /* 黑色表示時間未到 */
+}
+
+.status-published {
+    color: green; /* 綠色表示上架中 */
+}
+
+.status-unpublished {
+    color: red; /* 紅色表示時間到下架中 */
+}
+
