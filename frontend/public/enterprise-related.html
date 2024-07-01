@@ -7,38 +7,41 @@
     <link rel="stylesheet" href="/public/css/enterprise-related.css">
 </head>
 <body>
-    <h1>公告管理-企業相關</h1>
-    <h2>預設編輯時間排序，新的在上</h2>
-    <div>
-        <button onclick="location.href='announcement-form.html'">新增</button>
-        <button onclick="history.back()">回上一頁</button>
-    </div>
-    <div id="publish-all-button" style="display: none;">
-        <button onclick="publishAll()" style="color: white; background-color: red;">一鍵上架</button>
-    </div>
-
-    <div id="messages"></div>
-    <div id="loading" style="display:none;">載入中...</div>
-    <div>
-        <table>
-            <thead>
-                <tr>
-                    <th>上架</th>
-                    <th>狀態</th> <!-- 新增的狀態欄位 -->
-                    <th>公告標題</th>
-                    <th>上架時間</th>
-                    <th>下架時間</th>
-                    <th>封面縮圖</th>
-                </tr>
-            </thead>
-            <tbody id="announcements-body">
-                <!-- 這裡將動態生成公告內容 -->
-            </tbody>
-        </table>
-    </div>
-    <div id="pagination" class="pagination">
-        <!-- 這裡將動態生成分頁按鈕 -->
-    </div>
-    <script src="/public/js/enterprise-related.js"></script>
+    <header>
+        <h1>公告管理-企業相關</h1>
+        <h2>預設編輯時間排序，新的在上</h2>
+    </header>
+    <main>
+        <section class="container">
+            <button onclick="location.href='announcement-form.html'">新增</button>
+            <button onclick="history.back()">回上一頁</button>
+        </section>
+        <section id="publish-all-button" class="container" style="display: none;">
+            <button onclick="publishAll()" style="color: white; background-color: red;">一鍵上架</button>
+        </section>
+        <section id="messages" class="container"></section>
+        <section id="loading" class="container" style="display:none;">載入中...</section>
+        <section class="container">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">上架</th>
+                        <th scope="col">狀態</th>
+                        <th scope="col">公告標題</th>
+                        <th scope="col">上架時間</th>
+                        <th scope="col">下架時間</th>
+                        <th scope="col">封面縮圖</th>
+                    </tr>
+                </thead>
+                <tbody id="announcements-body">
+                    <!-- 這裡將動態生成公告內容 -->
+                </tbody>
+            </table>
+        </section>
+        <nav id="pagination" class="pagination container">
+            <!-- 這裡將動態生成分頁按鈕 -->
+        </nav>
+    </main>
+    <script src="/public/js/enterprise-related.js" defer></script>
 </body>
 </html>

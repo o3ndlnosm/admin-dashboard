@@ -4,39 +4,39 @@
     "title": "我是會上架的公告",
     "context": "<p><br></p>",
     "image": null,
-    "timeOn": "2024-07-01T11:00",
-    "timeOff": "2024-07-01T12:00",
+    "timeOn": "2024-07-01T18:00",
+    "timeOff": "2024-07-01T19:00",
     "hyperlink": "NIL",
     "priority": 0,
     "enable": true,
     "autoEnable": true,
-    "editTime": "2024-07-01T03:10:00.597Z"
+    "editTime": "2024-07-01T10:26:26.562Z"
   },
   {
     "id": "1719564812340",
     "title": "我在測試功能",
     "context": "<p><br></p>",
     "image": null,
-    "timeOn": "2024-07-01T11:00",
-    "timeOff": "2024-07-01T12:00",
+    "timeOn": "2024-07-01T18:00",
+    "timeOff": "2024-07-01T19:00",
     "hyperlink": "NIL",
     "priority": 0,
     "enable": true,
     "autoEnable": true,
-    "editTime": "2024-07-01T03:24:00.105Z"
+    "editTime": "2024-07-01T10:26:29.945Z"
   },
   {
     "id": "1719567913061",
     "title": "測試",
     "context": "<p><br></p>",
     "image": null,
-    "timeOn": "2024-07-01T12:00",
-    "timeOff": "2024-07-01T13:00",
+    "timeOn": "2024-07-01T16:00",
+    "timeOff": "2024-07-01T17:00",
     "hyperlink": "NIL",
     "priority": 0,
     "enable": false,
-    "autoEnable": true,
-    "editTime": "2024-07-01T03:45:33.722Z"
+    "autoEnable": false,
+    "editTime": "2024-07-01T09:05:00.573Z"
   },
   {
     "id": "1719794314559",
@@ -49,32 +49,71 @@
     "priority": 0,
     "enable": false,
     "autoEnable": false,
-    "editTime": "2024-07-01T03:00:00.130Z"
+    "editTime": "2024-07-01T09:05:00.573Z"
   },
   {
     "id": "1719798768802",
     "title": "我要修改一下再上架",
     "context": "<p><br></p>",
     "image": null,
-    "timeOn": "2024-07-01T10:00",
-    "timeOff": "2024-07-01T11:00",
+    "timeOn": "2024-07-01T15:00",
+    "timeOff": "2024-07-01T16:00",
     "hyperlink": "NIL",
     "priority": 0,
     "enable": false,
     "autoEnable": false,
-    "editTime": "2024-07-01T03:00:00.130Z"
+    "editTime": "2024-07-01T09:05:00.573Z"
   },
   {
     "id": "1719804329712",
     "title": "我在測試未上架",
     "context": "<p><br></p>",
     "image": null,
-    "timeOn": "2024-07-01T12:00",
-    "timeOff": "2024-07-01T13:00",
+    "timeOn": "2024-07-01T15:00",
+    "timeOff": "2024-07-01T16:00",
     "hyperlink": "NIL",
     "priority": 0,
     "enable": false,
+    "autoEnable": false,
+    "editTime": "2024-07-01T09:05:00.573Z"
+  },
+  {
+    "id": "1719815990246",
+    "title": "測試未上架",
+    "context": "<p><br></p>",
+    "image": null,
+    "timeOn": "2024-07-01T15:00",
+    "timeOff": "2024-07-01T16:00",
+    "hyperlink": "NIL",
+    "priority": 0,
+    "enable": false,
+    "autoEnable": false,
+    "editTime": "2024-07-01T09:05:00.573Z"
+  },
+  {
+    "id": "1719823884298",
+    "title": "測試自動上架",
+    "context": "<p><br></p>",
+    "image": null,
+    "timeOn": "2024-07-01T18:00",
+    "timeOff": "2024-07-01T19:00",
+    "hyperlink": "NIL",
+    "priority": 0,
+    "enable": true,
     "autoEnable": true,
-    "editTime": "2024-07-01T03:30:10.975Z"
+    "editTime": "2024-07-01T10:26:23.378Z"
+  },
+  {
+    "id": "1719827591104",
+    "title": "17:55 上架",
+    "context": "<p><br></p>",
+    "image": null,
+    "timeOn": "2024-07-01T17:55",
+    "timeOff": "2024-07-01T18:00",
+    "hyperlink": "NIL",
+    "priority": 0,
+    "enable": false,
+    "autoEnable": false,
+    "editTime": "2024-07-01T10:00:00.940Z"
   }
 ]

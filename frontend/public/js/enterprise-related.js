@@ -1,44 +1,145 @@
 let currentPage = 1;
+let editedAnnouncements = JSON.parse(localStorage.getItem('editedAnnouncements')) || []; // 紀錄被編輯的公告ID
+let announcementsData = []; // 儲存公告數據的全局變量
 
-function toggleAutoEnable(announcementId, currentAutoEnable, timeOff, isDown) {
-    if (isDown) {
-        alert('此公告已下架，請重新編輯文章以重新上架。');
-        // 重新設置開關狀態以保持一致
-        document.getElementById(`switch-${announcementId}`).checked = false;
-        return; // 已下架的公告不允許重新開啟自動上架
-    }
-
-    const newAutoEnable = !currentAutoEnable;
-    const action = newAutoEnable ? '開啟自動上架' : '關閉自動上架';
-    
-    if (!confirm(`您確定要${action}這個公告嗎？`)) {
-        // 重新設置開關狀態以保持一致
-        document.getElementById(`switch-${announcementId}`).checked = currentAutoEnable;
-        return; // 用戶取消操作
-    }
-
-    fetch(`http://localhost:3001/api/announcements/${announcementId}/enable`, {
+const updateAutoEnable = (announcementId, newAutoEnable) => {
+    return fetch(`http://localhost:3001/api/announcements/${announcementId}/enable`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ enable: newAutoEnable }),
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        loadAnnouncements(currentPage); // 重新加載公告列表
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('更新自動上架狀態時出錯');
-        // 重新設置開關狀態以保持一致
-        document.getElementById(`switch-${announcementId}`).checked = currentAutoEnable;
     });
-}
+};
 
-function loadAnnouncements(page = 1) {
+const toggleAutoEnable = (announcementId, currentAutoEnable, timeOn, timeOff, isDown) => {
+    console.log(`toggleAutoEnable - ID: ${announcementId}, Current: ${currentAutoEnable}, IsDown: ${isDown}`);
+    if (isDown) {
+        alert('此公告已下架，請重新編輯文章以重新上架。');
+        document.getElementById(`switch-${announcementId}`).checked = false;
+        return;
+    }
+
+    const newAutoEnable = !currentAutoEnable;
+    const action = newAutoEnable ? '開啟自動上架' : '關閉自動上架';
+
+    if (!confirm(`您確定要${action}這個公告嗎？`)) {
+        document.getElementById(`switch-${announcementId}`).checked = currentAutoEnable;
+        return;
+    }
+
+    updateAutoEnable(announcementId, newAutoEnable)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            loadAnnouncements(currentPage);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('更新自動上架狀態時出錯');
+            document.getElementById(`switch-${announcementId}`).checked = currentAutoEnable;
+        });
+};
+
+const renderAnnouncementRow = (announcement) => {
+    const row = document.createElement('tr');
+
+    const autoEnableCell = document.createElement('td');
+    const switchLabel = document.createElement('label');
+    switchLabel.classList.add('switch');
+    const autoEnableSwitch = document.createElement('input');
+    autoEnableSwitch.type = 'checkbox';
+    autoEnableSwitch.checked = announcement.autoEnable;
+    autoEnableSwitch.id = `switch-${announcement.id}`;
+    const now = new Date();
+    const timeOnDate = new Date(announcement.timeOn);
+    const timeOffDate = new Date(announcement.timeOff);
+    const isDown = timeOffDate <= now;
+    autoEnableSwitch.onchange = () => toggleAutoEnable(announcement.id, announcement.autoEnable, announcement.timeOn, announcement.timeOff, isDown);
+    const sliderSpan = document.createElement('span');
+    sliderSpan.classList.add('slider');
+    switchLabel.appendChild(autoEnableSwitch);
+    switchLabel.appendChild(sliderSpan);
+    autoEnableCell.appendChild(switchLabel);
+    row.appendChild(autoEnableCell);
+
+    const statusCell = document.createElement('td');
+    const statusSpan = document.createElement('span');
+    statusSpan.classList.add('status-box');
+
+    if (timeOffDate <= now) {
+        statusSpan.classList.add('status-unpublished');
+        statusSpan.textContent = " 已下架";
+        announcement.autoEnable = false;
+    } else if (!announcement.autoEnable) {
+        statusSpan.classList.add('status-default');
+        statusSpan.textContent = " 未排定自動上架";
+    } else if (announcement.autoEnable && timeOnDate > now) {
+        statusSpan.classList.add('status-scheduled');
+        statusSpan.textContent = " 未上架";
+    } else if (announcement.enable && timeOffDate > now) {
+        statusSpan.classList.add('status-published');
+        statusSpan.textContent = " 已上架";
+    }
+    statusCell.appendChild(statusSpan);
+    row.appendChild(statusCell);
+
+    const titleCell = document.createElement('td');
+    const titleLink = document.createElement('a');
+    titleLink.href = `announcement-form.html?id=${announcement.id}`;
+    titleLink.textContent = announcement.title;
+    titleLink.onclick = (event) => {
+        event.preventDefault();
+        console.log(`Editing announcement - ID: ${announcement.id}`);
+        if (announcement.autoEnable) {
+            updateAutoEnable(announcement.id, false)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    loadAnnouncements(currentPage);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('關閉自動上架狀態時出錯');
+                });
+        }
+
+        if (!editedAnnouncements.includes(announcement.id)) {
+            editedAnnouncements.push(announcement.id);
+            localStorage.setItem('editedAnnouncements', JSON.stringify(editedAnnouncements));
+            console.log('被編輯的公告ID (增加後):', editedAnnouncements);
+        } else {
+            console.log('被編輯的公告ID (已存在):', editedAnnouncements);
+        }
+
+        window.location.href = titleLink.href;
+    };
+    titleCell.appendChild(titleLink);
+    row.appendChild(titleCell);
+
+    const timeOnCell = document.createElement('td');
+    timeOnCell.textContent = announcement.timeOn;
+    row.appendChild(timeOnCell);
+
+    const timeOffCell = document.createElement('td');
+    timeOffCell.textContent = announcement.timeOff;
+    row.appendChild(timeOffCell);
+
+    const imageCell = document.createElement('td');
+    if (announcement.image) {
+        const img = document.createElement('img');
+        img.src = `http://localhost:3001/uploads/${announcement.image}`;
+        imageCell.appendChild(img);
+    }
+    row.appendChild(imageCell);
+
+    return row;
+};
+
+const loadAnnouncements = (page = 1) => {
+    console.log(`loadAnnouncements - Page: ${page}`);
     fetch(`http://localhost:3001/api/announcements?page=${page}&forManagement=true`)
         .then(response => {
             if (!response.ok) {
@@ -47,120 +148,28 @@ function loadAnnouncements(page = 1) {
             return response.json();
         })
         .then(data => {
+            announcementsData = data.announcements;
+            console.log('Announcements data loaded:', data);
             const tbody = document.getElementById('announcements-body');
             const publishAllButton = document.getElementById('publish-all-button');
-            let hasEdited = false;
-
-            tbody.innerHTML = ''; // 清空現有的公告
+            tbody.innerHTML = '';
 
             data.announcements.forEach(announcement => {
-                if (!announcement.enable && announcement.editTime) {
-                    hasEdited = true;
-                }
-
-                const row = document.createElement('tr');
-
-                // 上架欄位
-                const autoEnableCell = document.createElement('td');
-                const switchLabel = document.createElement('label');
-                switchLabel.classList.add('switch');
-                const autoEnableSwitch = document.createElement('input');
-                autoEnableSwitch.type = 'checkbox';
-                autoEnableSwitch.checked = announcement.autoEnable;
-                autoEnableSwitch.id = `switch-${announcement.id}`;
-                const now = new Date();
-                const timeOnDate = new Date(announcement.timeOn);
-                const timeOffDate = new Date(announcement.timeOff);
-                const isDown = timeOffDate <= now;
-                autoEnableSwitch.onchange = () => toggleAutoEnable(announcement.id, announcement.autoEnable, announcement.timeOff, isDown);
-                const sliderSpan = document.createElement('span');
-                sliderSpan.classList.add('slider');
-                switchLabel.appendChild(autoEnableSwitch);
-                switchLabel.appendChild(sliderSpan);
-                autoEnableCell.appendChild(switchLabel);
-                row.appendChild(autoEnableCell);
-
-                // 狀態欄位
-                const statusCell = document.createElement('td');
-                const statusSpan = document.createElement('span');
-                statusSpan.classList.add('status-box');
-
-                if (timeOffDate <= now) {
-                    statusSpan.classList.add('status-unpublished');
-                    statusSpan.textContent = " 已下架";
-                    announcement.autoEnable = false; // 自動將公告下架
-                } else if (!announcement.autoEnable) {
-                    statusSpan.classList.add('status-default');
-                    statusSpan.textContent = " 未排定自動上架";
-                } else if (announcement.autoEnable && timeOnDate > now) {
-                    statusSpan.classList.add('status-scheduled');
-                    statusSpan.textContent = " 未上架";
-                } else if (announcement.enable && timeOffDate > now) {
-                    statusSpan.classList.add('status-published');
-                    statusSpan.textContent = " 已上架";
-                }
-                statusCell.appendChild(statusSpan);
-                row.appendChild(statusCell);
-
-                // 公告標題欄位
-                const titleCell = document.createElement('td');
-                const titleLink = document.createElement('a');
-                titleLink.href = `announcement-form.html?id=${announcement.id}`;
-                titleLink.textContent = announcement.title;
-                titleLink.onclick = () => {
-                    // 在編輯公告時，自動關閉自動上架功能
-                    if (announcement.autoEnable) {
-                        fetch(`http://localhost:3001/api/announcements/${announcement.id}/enable`, {
-                            method: 'PATCH',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ enable: false }),
-                        })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Network response was not ok');
-                            }
-                            loadAnnouncements(currentPage); // 重新加載公告列表
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('關閉自動上架狀態時出錯');
-                        });
-                    }
-                };
-                titleCell.appendChild(titleLink);
-                row.appendChild(titleCell);
-
-                // 上架時間欄位
-                const timeOnCell = document.createElement('td');
-                timeOnCell.textContent = announcement.timeOn;
-                row.appendChild(timeOnCell);
-
-                // 下架時間欄位
-                const timeOffCell = document.createElement('td');
-                timeOffCell.textContent = announcement.timeOff;
-                row.appendChild(timeOffCell);
-
-                const imageCell = document.createElement('td');
-                if (announcement.image) {
-                    const img = document.createElement('img');
-                    img.src = `http://localhost:3001/uploads/${announcement.image}`;
-                    imageCell.appendChild(img);
-                }
-                row.appendChild(imageCell);
-
+                console.log(`Processing announcement - ID: ${announcement.id}`);
+                const row = renderAnnouncementRow(announcement);
                 tbody.appendChild(row);
             });
 
-            if (hasEdited) {
+            if (editedAnnouncements.length > 0) {
                 publishAllButton.style.display = 'block';
             } else {
                 publishAllButton.style.display = 'none';
             }
 
+            console.log(`publishAllButton display style: ${publishAllButton.style.display}`);
+
             const pagination = document.getElementById('pagination');
-            pagination.innerHTML = ''; // 清空現有的分頁按鈕
+            pagination.innerHTML = '';
 
             for (let i = 1; i <= data.totalPages; i++) {
                 const button = document.createElement('button');
@@ -176,32 +185,44 @@ function loadAnnouncements(page = 1) {
             console.error('Error:', error);
             alert('加載公告時出錯');
         });
-}
+};
 
-function publishAll() {
-    if (!confirm('您確定要一鍵上架所有編輯過的公告嗎？')) {
-        return; // 用戶取消操作
+const publishAll = () => {
+    if (!confirm('您確定要一鍵安排上架所有編輯過的公告嗎？')) {
+        return;
     }
 
-    fetch('http://localhost:3001/api/announcements/enable-all', {
+    const now = new Date().toISOString();
+    const announcementsToPublish = editedAnnouncements.filter(id => {
+        const announcement = announcementsData.find(a => a.id === id);
+        return announcement && new Date(announcement.timeOn) <= new Date(now);
+    });
+
+    fetch('http://localhost:3001/api/announcements/schedule-all', {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
-        }
+        },
+        body: JSON.stringify({ ids: announcementsToPublish }),
     })
     .then(response => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-        loadAnnouncements(currentPage); // 重新加載公告列表
+        console.log('Publish all successful');
+        editedAnnouncements = [];
+        localStorage.removeItem('editedAnnouncements');
+        document.getElementById('publish-all-button').style.display = 'none';
+        console.log('publish-all-button hidden');
+        loadAnnouncements(currentPage);
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('一鍵上架時出錯');
+        alert('一鍵安排上架時出錯');
     });
-}
+};
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Document loaded');
     loadAnnouncements(currentPage);
 });
-
