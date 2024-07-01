@@ -60,6 +60,7 @@ function loadAnnouncements(page = 1) {
 
                 const row = document.createElement('tr');
 
+                // 上架欄位
                 const autoEnableCell = document.createElement('td');
                 const switchLabel = document.createElement('label');
                 switchLabel.classList.add('switch');
@@ -68,6 +69,7 @@ function loadAnnouncements(page = 1) {
                 autoEnableSwitch.checked = announcement.autoEnable;
                 autoEnableSwitch.id = `switch-${announcement.id}`;
                 const now = new Date();
+                const timeOnDate = new Date(announcement.timeOn);
                 const timeOffDate = new Date(announcement.timeOff);
                 const isDown = timeOffDate <= now;
                 autoEnableSwitch.onchange = () => toggleAutoEnable(announcement.id, announcement.autoEnable, announcement.timeOff, isDown);
@@ -78,37 +80,67 @@ function loadAnnouncements(page = 1) {
                 autoEnableCell.appendChild(switchLabel);
                 row.appendChild(autoEnableCell);
 
+                // 狀態欄位
+                const statusCell = document.createElement('td');
+                const statusSpan = document.createElement('span');
+                statusSpan.classList.add('status-box');
+
+                if (timeOffDate <= now) {
+                    statusSpan.classList.add('status-unpublished');
+                    statusSpan.textContent = " 已下架";
+                    announcement.autoEnable = false; // 自動將公告下架
+                } else if (!announcement.autoEnable) {
+                    statusSpan.classList.add('status-default');
+                    statusSpan.textContent = " 未排定自動上架";
+                } else if (announcement.autoEnable && timeOnDate > now) {
+                    statusSpan.classList.add('status-scheduled');
+                    statusSpan.textContent = " 未上架";
+                } else if (announcement.enable && timeOffDate > now) {
+                    statusSpan.classList.add('status-published');
+                    statusSpan.textContent = " 已上架";
+                }
+                statusCell.appendChild(statusSpan);
+                row.appendChild(statusCell);
+
+                // 公告標題欄位
                 const titleCell = document.createElement('td');
                 const titleLink = document.createElement('a');
                 titleLink.href = `announcement-form.html?id=${announcement.id}`;
                 titleLink.textContent = announcement.title;
+                titleLink.onclick = () => {
+                    // 在編輯公告時，自動關閉自動上架功能
+                    if (announcement.autoEnable) {
+                        fetch(`http://localhost:3001/api/announcements/${announcement.id}/enable`, {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ enable: false }),
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            loadAnnouncements(currentPage); // 重新加載公告列表
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('關閉自動上架狀態時出錯');
+                        });
+                    }
+                };
                 titleCell.appendChild(titleLink);
                 row.appendChild(titleCell);
 
+                // 上架時間欄位
                 const timeOnCell = document.createElement('td');
                 timeOnCell.textContent = announcement.timeOn;
                 row.appendChild(timeOnCell);
 
+                // 下架時間欄位
                 const timeOffCell = document.createElement('td');
                 timeOffCell.textContent = announcement.timeOff;
                 row.appendChild(timeOffCell);
-
-                // 根據公告的狀態應用不同的顏色樣式
-                const timeOnDate = new Date(announcement.timeOn);
-
-                if (timeOnDate > now) {
-                    // 時間未到
-                    timeOnCell.classList.add('status-default');
-                    timeOffCell.classList.add('status-default');
-                } else if (announcement.enable && timeOffDate > now) {
-                    // 上架中
-                    timeOnCell.classList.add('status-published');
-                    timeOffCell.classList.add('status-default');
-                } else if (isDown) {
-                    // 時間到下架中
-                    timeOffCell.classList.add('status-unpublished');
-                    announcement.autoEnable = false; // 自動將公告下架
-                }
 
                 const imageCell = document.createElement('td');
                 if (announcement.image) {
@@ -172,3 +204,4 @@ function publishAll() {
 document.addEventListener('DOMContentLoaded', function() {
     loadAnnouncements(currentPage);
 });
+

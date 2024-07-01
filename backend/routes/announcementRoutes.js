@@ -71,6 +71,7 @@ cron.schedule('* * * * *', () => { // 每分鐘檢查一次
                 }
                 if (new Date(announcement.timeOff) <= now && announcement.enable) {
                     announcement.enable = false;
+                    announcement.autoEnable = false; // 更新autoEnable狀態
                     changed = true;
                 }
                 if (changed) {

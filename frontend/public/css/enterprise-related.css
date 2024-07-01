@@ -133,4 +133,27 @@ input:checked + .slider:before {
 .status-unpublished {
     color: red; /* 紅色表示時間到下架中 */
 }
+.status-box {
+    display: inline-block;
+    padding: 2px 5px;
+    border-radius: 3px;
+    color: white;
+    font-weight: bold;
+}
+
+.status-default {
+    background-color: gray;
+}
+
+.status-published {
+    background-color: green;
+}
+
+.status-unpublished {
+    background-color: red;
+}
+
+.status-scheduled {
+    background-color: #003366;
+}
 

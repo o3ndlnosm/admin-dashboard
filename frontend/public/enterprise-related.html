@@ -14,14 +14,7 @@
         <button onclick="history.back()">回上一頁</button>
     </div>
     <div id="publish-all-button" style="display: none;">
-            <button onclick="publishAll()" style="color: white; background-color: red;">一鍵上架</button>
-    </div>
-    <div>
-        <p>
-            <span class="status-default">●</span> 時間未到
-            <span class="status-published">●</span> 上架中
-            <span class="status-unpublished">●</span> 時間到下架中
-        </p>
+        <button onclick="publishAll()" style="color: white; background-color: red;">一鍵上架</button>
     </div>
 
     <div id="messages"></div>
@@ -31,6 +24,7 @@
             <thead>
                 <tr>
                     <th>上架</th>
+                    <th>狀態</th> <!-- 新增的狀態欄位 -->
                     <th>公告標題</th>
                     <th>上架時間</th>
                     <th>下架時間</th>
@@ -48,4 +42,3 @@
     <script src="/public/js/enterprise-related.js"></script>
 </body>
 </html>
-

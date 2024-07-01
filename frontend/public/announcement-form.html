@@ -78,6 +78,26 @@
 
         quill.getModule('toolbar').addHandler('image', imageHandler);
 
+        function toDatetimeLocal(date) {
+            const ten = function (i) {
+                return (i < 10 ? '0' : '') + i;
+            };
+            const YYYY = date.getFullYear();
+            const MM = ten(date.getMonth() + 1);
+            const DD = ten(date.getDate());
+            const HH = ten(date.getHours());
+            return YYYY + '-' + MM + '-' + DD + 'T' + HH + ':00';
+        }
+
+        function setDefaultTimes() {
+            const now = new Date();
+            now.setMinutes(0, 0, 0); // 將分鐘和秒設為00
+            const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
+
+            document.getElementById('timeOn').value = toDatetimeLocal(now);
+            document.getElementById('timeOff').value = toDatetimeLocal(oneHourLater);
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('announcement-form');
             const urlParams = new URLSearchParams(window.location.search);
@@ -89,14 +109,16 @@
                     .then(data => {
                         document.getElementById('title').value = data.title;
                         quill.root.innerHTML = data.context;
-                        document.getElementById('timeOn').value = new Date(data.timeOn).toISOString().slice(0, 16);
-                        document.getElementById('timeOff').value = new Date(data.timeOff).toISOString().slice(0, 16);
                         document.getElementById('hyperlink').value = data.hyperlink;
+                        // 無論是新增還是編輯，都套用預設時間邏輯
+                        setDefaultTimes();
                     })
                     .catch(error => {
                         console.error('Error:', error);
                         alert('加載公告時出錯');
                     });
+            } else {
+                setDefaultTimes();
             }
 
             form.addEventListener('submit', function(event) {
