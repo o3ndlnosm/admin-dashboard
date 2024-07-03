@@ -4,6 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>後台首頁</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 36px;
+            animation: fadeIn 1s ease-in-out;
+            padding-right: 30px;
+        }
+
+        nav {
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 350px;
+            animation: slideIn 1s ease-in-out;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            background: #ecf0f1;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 30px;
+            transition: transform 0.3s ease, background 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        li:hover {
+            transform: translateY(-5px);
+            background: #bdc3c7;
+        }
+
+        li div {
+            padding: 10px;
+            background: #ffffff;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        li:hover div {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
 </head>
 <body>
     <h1>後台首頁</h1>

@@ -68,8 +68,14 @@ th {
     color: #333;
 }
 
+tbody tr {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
 tbody tr:hover {
-    background-color: #f1f1f1;
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #f1f1f1; /* 增加背景色變化 */
 }
 
 img {
@@ -167,4 +173,70 @@ input:checked + .slider:before {
 
 .status-scheduled {
     background-color: #007bff; /* 藍色 */
+}
+
+/* 模態窗口樣式 */
+.modal {
+    display: none; /* 預設隱藏 */
+    position: fixed; /* 固定位置 */
+    z-index: 1000; /* 確保位於頂層 */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* 允許滾動 */
+    background-color: rgba(0,0,0,0.4); /* 背景遮罩 */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 中心顯示 */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* 宽度 */
+    max-width: 600px; /* 最大寬度 */
+    border-radius: 10px;
+}
+
+.modal-content p {
+    font-size: 18px;
+    margin: 0;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 置頂按鈕樣式 */
+.pin-button {
+    background: none !important; /* 確保背景顏色為透明 */
+    border: none !important;
+    cursor: pointer;
+    font-size: 20px; /* 調整按鈕大小 */
+    margin-left: 20px; /* 根據需要調整間距 */
+    transition: color 0.3s ease, transform 0.3s ease;
+    padding: 0; /* 移除內間距 */
+}
+
+.pin-button .fa-thumbtack {
+    color: #ccc; /* 未置頂時的顏色 */
+}
+
+.pin-button.pinned .fa-thumbtack {
+    color: #007bff; /* 置頂後的顏色 */
+}
+
+.pin-button:hover {
+    transform: scale(1.2); /* 添加縮放效果 */
+    color: #0056b3 !important; /* 確保懸停時顏色變化 */
 }

@@ -5,7 +5,7 @@ const path = require('path');
 const multer = require('multer');
 const cron = require('node-cron');
 
-// 設置multer以處理封面縮圖上傳
+// 設置 multer 以處理封面縮圖上傳
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, 'uploads/');
@@ -97,7 +97,7 @@ cron.schedule('* * * * *', () => { // 每分鐘檢查一次
             }
             if (new Date(announcement.timeOff) <= now && announcement.enable) {
                 announcement.enable = false;
-                announcement.autoEnable = false; // 更新autoEnable狀態
+                announcement.autoEnable = false; // 更新 autoEnable 狀態
                 changed = true;
             }
             if (changed) {
@@ -137,7 +137,8 @@ router.post('/', upload.single('image'), (req, res) => {
         priority: 0,
         enable: false, // 新增時預設為下架狀態
         autoEnable: false, // 新增時預設不自動上架
-        editTime: now.toISOString() // 新增編輯時間
+        editTime: now.toISOString(), // 新增編輯時間
+        pinned: false // 新增時預設不置頂
     };
 
     ensureDirectoryExistence(path.join(__dirname, '..', 'data', 'businessNews.json'));
@@ -262,6 +263,10 @@ router.patch('/:id/enable', (req, res) => {
         // 如果設置了自動上架且上架時間已到，則立即上架
         if (enable && new Date(announcements[announcementIndex].timeOn) <= new Date()) {
             announcements[announcementIndex].enable = true;
+        } else if (!enable && announcements[announcementIndex].enable) {
+            // 當關閉自動上架且公告已上架時，將其下架
+            announcements[announcementIndex].enable = false;
+            announcements[announcementIndex].pinned = false; // 下架時取消置頂
         }
 
         writeAnnouncements(announcements, (err) => {
@@ -277,19 +282,24 @@ router.patch('/:id/enable', (req, res) => {
     });
 });
 
-// 新增：處理一鍵安排上架請求
+// 處理一鍵安排上架請求
 router.patch('/schedule-all', (req, res) => {
-    const { ids } = req.body;
-
+    const { ids, autoEnable } = req.body;
     readAnnouncements((err, announcements) => {
         if (err) {
             return res.status(500).json({ success: false, message: '讀取公告數據時出錯' });
         }
 
         let updated = false;
+        const now = new Date();
+
         announcements = announcements.map(announcement => {
             if (ids.includes(announcement.id)) {
-                announcement.autoEnable = true;
+                announcement.autoEnable = autoEnable; // 設置自動上架
+                // 如果上架時間已到，設置為已上架
+                if (new Date(announcement.timeOn) <= now) {
+                    announcement.enable = true;
+                }
                 updated = true;
             }
             return announcement;
@@ -302,18 +312,55 @@ router.patch('/schedule-all', (req, res) => {
                     return res.status(500).json({ success: false, message: '儲存公告時出錯' });
                 }
 
-                res.json({ success: true, message: '所有編輯過的公告已安排上架！' });
+                // 發送 SSE 通知
+                announcements.forEach(announcement => {
+                    if (ids.includes(announcement.id)) {
+                        notifyClients({ type: 'update-announcement', data: announcement });
+                    }
+                });
+
+                res.json({ success: true, message: '所有公告已排定自動上架！' });
             });
         } else {
-            res.json({ success: false, message: '沒有公告被更新。' });
+            res.json({ success: true, message: '沒有公告需要更新。' });
         }
+    });
+});
+
+// 處理公告置頂狀態切換
+router.patch('/:id/pin', (req, res) => {
+    const { id } = req.params;
+    const { pinned } = req.body;
+
+    readAnnouncements((err, announcements) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: '讀取公告數據時出錯' });
+        }
+
+        let announcementIndex = announcements.findIndex(a => a.id === id);
+        if (announcementIndex === -1) {
+            return res.status(404).json({ success: false, message: '公告不存在' });
+        }
+
+        announcements[announcementIndex].pinned = pinned;
+
+        writeAnnouncements(announcements, (err) => {
+            if (err) {
+                console.error('Error updating announcement pinned status:', err);
+                return res.status(500).json({ success: false, message: '更新公告置頂狀態時出錯' });
+            }
+
+            notifyClients({ type: 'update-announcement', data: announcements[announcementIndex] });
+
+            res.json({ success: true, message: '公告置頂狀態已更新！' });
+        });
     });
 });
 
 // 處理獲取公告數據的請求，支援分頁
 router.get('/', (req, res) => {
-    const page = parseInt(req.query.page) || 1; // 默認頁碼為1
-    const pageSize = 10; // 每頁顯示10條數據
+    const page = parseInt(req.query.page) || 1; // 默認頁碼為 1
+    const pageSize = 10; // 每頁顯示 10 條數據
     const forManagement = req.query.forManagement === 'true'; // 是否為管理頁面請求
 
     readAnnouncements((err, announcements) => {
@@ -326,8 +373,13 @@ router.get('/', (req, res) => {
             announcements = announcements.filter(a => a.enable);
         }
 
-        // 按編輯時間排序，最新的在最上面
-        announcements = announcements.sort((a, b) => new Date(b.editTime) - new Date(a.editTime));
+        // 按置頂和編輯時間排序，置頂的在最上面，然後最新的在最上面
+        announcements = announcements.sort((a, b) => {
+            if (a.pinned === b.pinned) {
+                return new Date(b.editTime) - new Date(a.editTime);
+            }
+            return b.pinned - a.pinned;
+        });
 
         // 分頁處理
         const startIndex = (page - 1) * pageSize;
