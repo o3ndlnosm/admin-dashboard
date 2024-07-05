@@ -1,0 +1,41 @@
+[
+  {
+    "id": "1720072142605",
+    "title": "翰林，相信學習",
+    "videoLink": "https://www.youtube.com/embed/FIoW7a8Gmt4?si=g-1UfRGX-Z2Ex5PC",
+    "image": "image-1720075074194-87096665.jpg",
+    "timeOn": "2024-07-04T13:00",
+    "timeOff": "2024-07-05T13:00",
+    "createdAt": "2024-07-04T05:49:02.605Z",
+    "updatedAt": "2024-07-04T08:14:01.821Z",
+    "enable": true,
+    "autoEnable": true,
+    "pinned": false
+  },
+  {
+    "id": "1720075811157",
+    "title": "找到你的教育理想「職」，成就更好的自己!",
+    "videoLink": "https://youtu.be/LTrDwH4PRqo?si=Gz-Kegu8JLl93vz6",
+    "image": null,
+    "timeOn": "2024-07-04T14:00",
+    "timeOff": "2024-07-05T14:00",
+    "createdAt": "2024-07-04T06:50:11.157Z",
+    "updatedAt": "2024-07-04T06:52:11.192Z",
+    "enable": true,
+    "autoEnable": true,
+    "pinned": false
+  },
+  {
+    "id": "1720075923689",
+    "title": "能讓家人安心的業務理想職!",
+    "videoLink": "https://youtu.be/Ih7C8GwWyno",
+    "image": null,
+    "timeOn": "2024-07-04T14:00",
+    "timeOff": "2024-07-05T14:00",
+    "createdAt": "2024-07-04T06:52:03.689Z",
+    "updatedAt": "2024-07-04T08:14:05.873Z",
+    "enable": true,
+    "autoEnable": true,
+    "pinned": false
+  }
+]

@@ -4,10 +4,13 @@ const fs = require('fs');
 const path = require('path');
 const announcementRoutes = require('./routes/announcementRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
+const videoRoutes = require('./routes/videoRoutes');
+const reportRoutes = require('./routes/reportRoutes');
 
 const app = express();
 const port = 3001;
 
+// 確保必要的文件夾存在
 if (!fs.existsSync(path.join(__dirname, 'uploads'))) {
     fs.mkdirSync(path.join(__dirname, 'uploads'));
 }
@@ -19,10 +22,12 @@ if (!fs.existsSync(path.join(__dirname, 'data'))) {
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-app.use(express.static(path.join(__dirname, '..', 'frontend', 'public')));
 
+// 設置API路由
 app.use('/api/announcements', announcementRoutes);
 app.use('/api', uploadRoutes);
+app.use('/api/videos', videoRoutes);
+app.use('/api/reports', reportRoutes);
 
 app.listen(port, () => {
     console.log(`伺服器運行在 http://localhost:${port}`);
