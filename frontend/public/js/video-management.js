@@ -4,16 +4,15 @@ let videosData = [];
 
 // 更新自動上架和狀態
 const updateAutoEnableAndStatus = async (videoId, newAutoEnable, newEnable) => {
-    const response = await fetch(`http://localhost:3001/api/videos/${videoId}/enable`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ autoEnable: newAutoEnable, enable: newEnable }),
-    });
-    return response;
-  };
-  
+  const response = await fetch(`http://localhost:3001/api/videos/${videoId}/enable`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ autoEnable: newAutoEnable, enable: newEnable }),
+  });
+  return response;
+};
 
 // 切換自動上架
 const toggleAutoEnable = async (videoId, currentAutoEnable, timeOn, timeOff, isDown) => {
@@ -79,123 +78,128 @@ const saveEditedVideo = (videoId) => {
 
 // 渲染影片行
 const renderVideoRow = (video) => {
-    const row = document.createElement("tr");
-  
-    const autoEnableCell = document.createElement("td");
-    const switchLabel = document.createElement("label");
-    switchLabel.classList.add("switch");
-    const autoEnableSwitch = document.createElement("input");
-    autoEnableSwitch.type = "checkbox";
-    autoEnableSwitch.checked = video.autoEnable;
-    autoEnableSwitch.id = `switch-${video.id}`;
-    const now = new Date();
-    const timeOnDate = new Date(video.timeOn);
-    const timeOffDate = new Date(video.timeOff);
-    const isDown = timeOffDate <= now;
-    autoEnableSwitch.onchange = () =>
-      toggleAutoEnable(
-        video.id,
-        video.autoEnable,
-        video.timeOn,
-        video.timeOff,
-        isDown
-      );
-    const sliderSpan = document.createElement("span");
-    sliderSpan.classList.add("slider");
-    switchLabel.appendChild(autoEnableSwitch);
-    switchLabel.appendChild(sliderSpan);
-    autoEnableCell.appendChild(switchLabel);
-    row.appendChild(autoEnableCell);
-  
-    const statusCell = document.createElement("td");
-    const statusSpan = document.createElement("span");
-    statusSpan.classList.add("status-box");
-  
-    if (timeOffDate <= now) {
-      statusSpan.classList.add("status-unpublished");
-      statusSpan.textContent = " 已下架";
-      video.autoEnable = false;
-    } else if (!video.autoEnable) {
-      statusSpan.classList.add("status-default");
-      statusSpan.textContent = " 未排定自動上架";
-    } else if (video.autoEnable && timeOnDate > now) {
-      statusSpan.classList.add("status-scheduled");
-      statusSpan.textContent = " 未上架";
-    } else if (video.enable && timeOffDate > now) {
-      statusSpan.classList.add("status-published");
-      statusSpan.textContent = " 已上架";
+  const row = document.createElement("tr");
+
+  const autoEnableCell = document.createElement("td");
+  const switchLabel = document.createElement("label");
+  switchLabel.classList.add("switch");
+  const autoEnableSwitch = document.createElement("input");
+  autoEnableSwitch.type = "checkbox";
+  autoEnableSwitch.checked = video.autoEnable;
+  autoEnableSwitch.id = `switch-${video.id}`;
+  const now = new Date();
+  const timeOnDate = new Date(video.timeOn);
+  const timeOffDate = new Date(video.timeOff);
+  const isDown = timeOffDate <= now;
+  autoEnableSwitch.onchange = () =>
+    toggleAutoEnable(
+      video.id,
+      video.autoEnable,
+      video.timeOn,
+      video.timeOff,
+      isDown
+    );
+  const sliderSpan = document.createElement("span");
+  sliderSpan.classList.add("slider");
+  switchLabel.appendChild(autoEnableSwitch);
+  switchLabel.appendChild(sliderSpan);
+  autoEnableCell.appendChild(switchLabel);
+  row.appendChild(autoEnableCell);
+
+  const statusCell = document.createElement("td");
+  const statusSpan = document.createElement("span");
+  statusSpan.classList.add("status-box");
+
+  if (timeOffDate <= now) {
+    statusSpan.classList.add("status-unpublished");
+    statusSpan.textContent = " 已下架";
+    video.autoEnable = false;
+  } else if (!video.autoEnable) {
+    statusSpan.classList.add("status-default");
+    statusSpan.textContent = " 未排定自動上架";
+  } else if (video.autoEnable && timeOnDate > now) {
+    statusSpan.classList.add("status-scheduled");
+    statusSpan.textContent = " 未上架";
+  } else if (video.enable && timeOffDate > now) {
+    statusSpan.classList.add("status-published");
+    statusSpan.textContent = " 已上架";
+  }
+  statusCell.appendChild(statusSpan);
+
+  if (video.enable || (video.autoEnable && timeOnDate > now)) {
+    const pinButton = document.createElement("button");
+    pinButton.classList.add("pin-button");
+    if (video.pinned) {
+      pinButton.classList.add("pinned");
     }
-    statusCell.appendChild(statusSpan);
-  
-    if (video.enable || (video.autoEnable && timeOnDate > now)) {
-      const pinButton = document.createElement("button");
-      pinButton.classList.add("pin-button");
-      if (video.pinned) {
-        pinButton.classList.add("pinned");
-      }
-      const pinIcon = document.createElement("i");
-      pinIcon.classList.add("fas", "fa-thumbtack");
-      pinButton.appendChild(pinIcon);
-      pinButton.onclick = () => pinVideo(video.id, pinButton);
-      statusCell.appendChild(pinButton);
-    }
-  
-    row.appendChild(statusCell);
-  
-    const titleCell = document.createElement("td");
-    const titleLink = document.createElement("a");
-    titleLink.href = `video-form.html?id=${video.id}`;
-    titleLink.textContent = video.title;
-    titleLink.onclick = async (event) => {
-      event.preventDefault();
-      if (video.autoEnable) {
-        try {
-          const response = await updateAutoEnableAndStatus(video.id, false, false);
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          loadVideos(currentPage);
-        } catch (error) {
-          console.error("Error:", error);
-          alert("關閉自動上架狀態時出錯");
+    const pinIcon = document.createElement("i");
+    pinIcon.classList.add("fas", "fa-thumbtack");
+    pinButton.appendChild(pinIcon);
+    pinButton.onclick = () => pinVideo(video.id, pinButton);
+    statusCell.appendChild(pinButton);
+  }
+
+  row.appendChild(statusCell);
+
+  const titleCell = document.createElement("td");
+  const titleLink = document.createElement("a");
+  titleLink.href = `video-form.html?id=${video.id}`;
+  titleLink.textContent = video.title;
+  titleLink.onclick = async (event) => {
+    event.preventDefault();
+    if (video.autoEnable) {
+      try {
+        const response = await updateAutoEnableAndStatus(video.id, false, false);
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
         }
+        loadVideos(currentPage);
+      } catch (error) {
+        console.error("Error:", error);
+        alert("關閉自動上架狀態時出錯");
       }
-  
-      saveEditedVideo(video.id);
-  
-      window.location.href = titleLink.href;
-    };
-    titleCell.appendChild(titleLink);
-    row.appendChild(titleCell);
-  
-    const videoPreviewCell = document.createElement("td");
-    const videoPreview = document.createElement("video");
-    videoPreview.src = video.videoLink;
-    videoPreview.controls = true;
-    videoPreview.width = 100;
-    videoPreview.height = 60;
-    videoPreviewCell.appendChild(videoPreview);
-    row.appendChild(videoPreviewCell);
-  
-    const timeOnCell = document.createElement("td");
-    timeOnCell.textContent = video.timeOn;
-    row.appendChild(timeOnCell);
-  
-    const timeOffCell = document.createElement("td");
-    timeOffCell.textContent = video.timeOff;
-    row.appendChild(timeOffCell);
-  
-    const imageCell = document.createElement("td");
-    if (video.image) {
-      const img = document.createElement("img");
-      img.src = `http://localhost:3001/uploads/${video.image}`;
-      imageCell.appendChild(img);
     }
-    row.appendChild(imageCell);
-  
-    return row;
+
+    saveEditedVideo(video.id);
+
+    window.location.href = titleLink.href;
   };
-  
+  titleCell.appendChild(titleLink);
+  row.appendChild(titleCell);
+
+  const videoPreviewCell = document.createElement("td");
+  const playButton = document.createElement("button");
+  playButton.textContent = "播放";
+  playButton.onclick = () => showVideoModal(video.videoLink);
+  videoPreviewCell.appendChild(playButton);
+  row.appendChild(videoPreviewCell);
+
+  const timeOnCell = document.createElement("td");
+  timeOnCell.textContent = video.timeOn;
+  row.appendChild(timeOnCell);
+
+  const timeOffCell = document.createElement("td");
+  timeOffCell.textContent = video.timeOff;
+  row.appendChild(timeOffCell);
+
+  return row;
+};
+
+// 顯示視頻模態窗口
+const showVideoModal = (videoLink) => {
+  const modal = document.getElementById("video-modal");
+  const iframe = document.getElementById("video-iframe");
+  iframe.src = convertToYouTubeEmbedUrl(videoLink);
+  modal.style.display = "block";
+};
+
+// 關閉視頻模態窗口
+const closeVideoModal = () => {
+  const modal = document.getElementById("video-modal");
+  const iframe = document.getElementById("video-iframe");
+  iframe.src = "";
+  modal.style.display = "none";
+};
 
 // 置頂影片
 const pinVideo = async (videoId, pinButton) => {
@@ -226,12 +230,10 @@ const pinVideo = async (videoId, pinButton) => {
 const loadVideos = async (page = 1) => {
   try {
     const response = await fetch(`http://localhost:3001/api/videos?page=${page}&forManagement=true`);
-    console.log('response', response);
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
     const data = await response.json();
-    console.log('Data', data);
     videosData = data.videos;
     const tbody = document.getElementById("videos-body");
     const publishAllButton = document.getElementById("publish-all-button");
@@ -338,3 +340,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 });
+
+function convertToYouTubeEmbedUrl(url) {
+  const youtubeWatchRegex = /https:\/\/www\.youtube\.com\/watch\?v=([^&]+)/;
+  const youtubeShortRegex = /https:\/\/youtu\.be\/([^?]+)/;
+  const youtubeEmbedRegex = /https:\/\/www\.youtube\.com\/embed\/([^?]+)/;
+
+  let match = url.match(youtubeWatchRegex);
+  if (match) {
+    return `https://www.youtube.com/embed/${match[1]}`;
+  }
+
+  match = url.match(youtubeShortRegex);
+  if (match) {
+    return `https://www.youtube.com/embed/${match[1]}`;
+  }
+
+  match = url.match(youtubeEmbedRegex);
+  if (match) {
+    return url; // Already in embed format
+  }
+
+  return url; // If it's not a YouTube URL, return as is
+}

@@ -1,25 +1,14 @@
-:root {
-    --primary-color: #007bff;
-    --secondary-color: #28a745;
-    --danger-color: #dc3545;
-    --default-bg-color: #f4f4f4;
-    --default-text-color: #333;
-    --hover-color: #0056b3;
-    --table-bg-color: white;
-    --table-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    --modal-bg-color: rgba(0, 0, 0, 0.4);
-}
-
+/* 基本樣式 */
 body {
     font-family: Arial, sans-serif;
-    background-color: var(--default-bg-color);
+    background-color: #f4f4f4;
     margin: 0;
     padding: 20px;
 }
 
 a {
     text-decoration: none;
-    color: var(--primary-color);
+    color: #007bff;
 }
 
 a:hover {
@@ -33,7 +22,7 @@ h1, h2 {
 }
 
 h1 {
-    color: var(--default-text-color);
+    color: #333;
 }
 
 h2 {
@@ -46,7 +35,7 @@ h2 {
 }
 
 button {
-    background-color: var(--secondary-color);
+    background-color: #28a745;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -65,8 +54,8 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
-    background: var(--table-bg-color);
-    box-shadow: var(--table-shadow);
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 th, td {
@@ -76,8 +65,8 @@ th, td {
 }
 
 th {
-    background-color: var(--default-bg-color);
-    color: var(--default-text-color);
+    background-color: #f4f4f4;
+    color: #333;
 }
 
 tbody tr {
@@ -86,7 +75,7 @@ tbody tr {
 
 tbody tr:hover {
     transform: scale(1.05);
-    box-shadow: var(--table-shadow);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     background-color: #f1f1f1; /* 增加背景色變化 */
 }
 
@@ -102,7 +91,7 @@ img {
     border: none;
     background-color: #e0e0e0;
     cursor: pointer;
-    color: var(--default-text-color);
+    color: #333;
     transition: background-color 0.2s ease;
 }
 
@@ -176,15 +165,15 @@ input:checked + .slider:before {
 }
 
 .status-published {
-    background-color: var(--secondary-color); /* 綠色 */
+    background-color: #28a745; /* 綠色 */
 }
 
 .status-unpublished {
-    background-color: var(--danger-color); /* 紅色 */
+    background-color: #dc3545; /* 紅色 */
 }
 
 .status-scheduled {
-    background-color: var(--primary-color); /* 藍色 */
+    background-color: #007bff; /* 藍色 */
 }
 
 /* 模態窗口樣式 */
@@ -197,7 +186,7 @@ input:checked + .slider:before {
     width: 100%;
     height: 100%;
     overflow: auto; /* 允許滾動 */
-    background-color: var(--modal-bg-color); /* 背景遮罩 */
+    background-color: rgba(0,0,0,0.4); /* 背景遮罩 */
 }
 
 .modal-content {
@@ -245,10 +234,73 @@ input:checked + .slider:before {
 }
 
 .pin-button.pinned .fa-thumbtack {
-    color: var(--primary-color); /* 置頂後的顏色 */
+    color: #007bff; /* 置頂後的顏色 */
 }
 
-.pin-button:hover {
+pin-button:hover {
     transform: scale(1.2); /* 添加縮放效果 */
-    color: var(--hover-color) !important; /* 確保懸停時顏色變化 */
+    color: #0056b3 !important; /* 確保懸停時顏色變化 */
+}
+
+/* 企業影片管理頁面樣式 */
+body.enterprise-videos {
+    background-color: #e3f2fd; /* 淺藍色背景 */
+}
+
+header.enterprise-videos h1 {
+    color: #004085; /* 深藍色標題 */
+}
+
+header.enterprise-videos h2 {
+    color: #007bff; /* 藍色副標題 */
+}
+
+button.enterprise-videos {
+    background-color: #007bff; /* 藍色按鈕 */
+}
+
+button.enterprise-videos:hover {
+    background-color: #0056b3; /* 深藍色懸停狀態 */
+}
+
+/* 企業報導管理頁面樣式 */
+body.enterprise-reports {
+    background-color: #f9f9e3; /* 淺黃色背景 */
+}
+
+header.enterprise-reports h1 {
+    color: #705100; /* 深棕色標題 */
+}
+
+header.enterprise-reports h2 {
+    color: #a88702; /* 黃色副標題 */
+}
+
+button.enterprise-reports {
+    background-color: #a88702; /* 黃色按鈕 */
+}
+
+button.enterprise-reports:hover {
+    background-color: #705100; /* 深棕色懸停狀態 */
+}
+
+/* 企業 Banner 管理頁面樣式 */
+body.enterprise-banners {
+    background-color: #e0f7fa; /* 淺綠色背景 */
+}
+
+header.enterprise-banners h1 {
+    color: #00695c; /* 深綠色標題 */
+}
+
+header.enterprise-banners h2 {
+    color: #00796b; /* 中綠色副標題 */
+}
+
+button.enterprise-banners {
+    background-color: #00796b; /* 中綠色按鈕 */
+}
+
+button.enterprise-banners:hover {
+    background-color: #004d40; /* 深綠色懸停狀態 */
 }

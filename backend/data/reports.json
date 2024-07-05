@@ -8,9 +8,9 @@
     "timeOff": "2024-07-05T17:00",
     "hyperlink": "https://www.ettoday.net/news/20240418/2705196.htm",
     "priority": 0,
-    "enable": true,
-    "autoEnable": true,
-    "editTime": "2024-07-04T09:53:47.721Z",
+    "enable": false,
+    "autoEnable": false,
+    "editTime": "2024-07-05T09:00:00.164Z",
     "pinned": false
   },
   {
@@ -22,9 +22,9 @@
     "timeOff": "2024-07-05T18:00",
     "hyperlink": "https://www.ettoday.net/news/20240418/2705196.htm",
     "priority": 0,
-    "enable": true,
-    "autoEnable": true,
-    "editTime": "2024-07-04T10:02:19.257Z",
+    "enable": false,
+    "autoEnable": false,
+    "editTime": "2024-07-05T10:00:00.572Z",
     "pinned": false
   },
   {
@@ -36,9 +36,9 @@
     "timeOff": "2024-07-05T18:00",
     "hyperlink": "https://www.ettoday.net/news/20240418/2705196.htm",
     "priority": 0,
-    "enable": true,
-    "autoEnable": true,
-    "editTime": "2024-07-05T01:23:01.083Z",
+    "enable": false,
+    "autoEnable": false,
+    "editTime": "2024-07-05T10:00:00.572Z",
     "pinned": false
   }
 ]

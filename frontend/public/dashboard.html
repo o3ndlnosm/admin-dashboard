@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background: #f4f4f9;
+            background: #e9eef3;
             margin: 0;
             padding: 0;
             display: flex;
@@ -21,7 +21,6 @@
             text-align: center;
             margin-bottom: 20px;
             font-size: 36px;
-            animation: fadeIn 1s ease-in-out;
             padding-right: 30px;
         }
 
@@ -30,8 +29,7 @@
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            width: 350px;
-            animation: slideIn 1s ease-in-out;
+            width: 400px;
         }
 
         ul {
@@ -41,41 +39,52 @@
         }
 
         li {
-            background: #ecf0f1;
+            background: #ffffff;
             border-radius: 8px;
-            margin-bottom: 20px;
-            padding: 30px;
-            transition: transform 0.3s ease, background 0.3s ease;
+            margin-bottom: 10px;
+            padding: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
             position: relative;
         }
 
         li:hover {
             transform: translateY(-5px);
-            background: #bdc3c7;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
 
         li div {
             padding: 10px;
-            background: #ffffff;
+            background: #f8f9fa;
             border-radius: 5px;
             margin-top: 10px;
             display: none;
-            animation: fadeIn 0.5s ease-in-out;
         }
 
         li:hover div {
             display: block;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+        .nav-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        @keyframes slideIn {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        .nav-header h2 {
+            font-size: 18px;
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .arrow {
+            font-size: 20px;
+            color: #2c3e50;
+            transition: transform 0.3s ease;
+        }
+
+        li:hover .arrow {
+            transform: rotate(90deg);
         }
     </style>
 </head>
@@ -83,17 +92,29 @@
     <h1>後台首頁</h1>
     <nav>
         <ul>
-            <li>Banner管理
+            <li>
+                <div class="nav-header">
+                    <h2>Banner管理</h2>
+                    <span class="arrow">></span>
+                </div>
                 <div>翰林集團形象輪播</div>
                 <div>教學者相關輪播</div>
                 <div>學習者相關輪播</div>
             </li>
-            <li>關於翰林
+            <li>
+                <div class="nav-header">
+                    <h2>關於翰林</h2>
+                    <span class="arrow">></span>
+                </div>
                 <div>企業報導</div>
                 <div>企業影片</div>
             </li>
-            <li>公告管理
-                <div>企業相關</div>
+            <li>
+                <div class="nav-header">
+                    <h2>公告管理</h2>
+                    <span class="arrow">></span>
+                </div>
+                <div><a href="ann-management.html">企業相關</a></div>
                 <div>產品資訊</div>
             </li>
         </ul>

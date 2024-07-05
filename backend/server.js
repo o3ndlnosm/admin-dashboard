@@ -6,6 +6,7 @@ const announcementRoutes = require('./routes/announcementRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const videoRoutes = require('./routes/videoRoutes');
 const reportRoutes = require('./routes/reportRoutes');
+const bannerRoutes = require('./routes/bannerRoutes');
 
 const app = express();
 const port = 3001;
@@ -28,6 +29,7 @@ app.use('/api/announcements', announcementRoutes);
 app.use('/api', uploadRoutes);
 app.use('/api/videos', videoRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/banners', bannerRoutes);
 
 app.listen(port, () => {
     console.log(`伺服器運行在 http://localhost:${port}`);

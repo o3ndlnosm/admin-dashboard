@@ -2,15 +2,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const videoLinkInput = document.getElementById('videoLink');
     const youtubePreview = document.getElementById('youtubePreview');
     const videoPreview = document.getElementById('videoPreview');
-    const imageInput = document.getElementById('image');
-    const thumbnailPreview = document.getElementById('thumbnailPreview');
-    const thumbnailImage = document.getElementById('thumbnailImage');
-    const imageUploadContainer = document.getElementById('imageUploadContainer');
-    const removeThumbnailButton = document.getElementById('removeThumbnailButton');
 
     videoLinkInput.addEventListener('input', updateVideoPreview);
-    imageInput.addEventListener('change', handleImageUpload);
-    removeThumbnailButton.addEventListener('click', removeThumbnail);
     document.getElementById('video-form').addEventListener('submit', handleSubmit);
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -34,35 +27,6 @@ document.addEventListener('DOMContentLoaded', function() {
             videoPreview.classList.add('hidden');
             youtubePreview.classList.remove('ready');
         }
-    }
-
-    function handleImageUpload() {
-        const file = imageInput.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                thumbnailImage.src = e.target.result;
-                thumbnailPreview.classList.remove('hidden');
-                thumbnailImage.classList.add('ready');
-                imageUploadContainer.classList.add('hidden');
-                removeThumbnailButton.classList.remove('hidden');
-            };
-            reader.readAsDataURL(file);
-        } else {
-            thumbnailPreview.classList.add('hidden');
-            thumbnailImage.classList.remove('ready');
-            imageUploadContainer.classList.remove('hidden');
-            removeThumbnailButton.classList.add('hidden');
-        }
-    }
-
-    function removeThumbnail() {
-        thumbnailPreview.classList.add('hidden');
-        thumbnailImage.classList.remove('ready');
-        thumbnailImage.src = '';
-        imageUploadContainer.classList.remove('hidden');
-        removeThumbnailButton.classList.add('hidden');
-        imageInput.value = ''; // 清除文件输入的值
     }
 
     function toDatetimeLocal(date) {
@@ -115,14 +79,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         videoPreview.classList.remove('hidden');
                         youtubePreview.classList.add('ready');
                     }
-                }
-
-                if (data.image) {
-                    thumbnailImage.src = `http://localhost:3001/uploads/${data.image}`;
-                    thumbnailPreview.classList.remove('hidden');
-                    thumbnailImage.classList.add('ready');
-                    imageUploadContainer.classList.add('hidden');
-                    removeThumbnailButton.classList.remove('hidden');
                 }
             })
             .catch(error => {

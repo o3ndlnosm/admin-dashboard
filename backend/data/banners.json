@@ -1,0 +1,67 @@
+[
+  {
+    "id": "1720167840942",
+    "title": "相信學習",
+    "image": "/uploads/banners/image-1720167840940-388994585.jpg",
+    "timeOn": "2024-07-05T16:00",
+    "timeOff": "2024-07-06T16:00",
+    "hyperlink": "https://www.hle.com.tw/",
+    "priority": 0,
+    "enable": true,
+    "autoEnable": true,
+    "editTime": "2024-07-05T09:09:51.989Z",
+    "pinned": false
+  },
+  {
+    "id": "1720171000153",
+    "title": "測試1",
+    "image": "/uploads/banners/image-1720171000151-465460155.webp",
+    "timeOn": "2024-07-05T17:00",
+    "timeOff": "2024-07-06T17:00",
+    "hyperlink": "https://www.hle.com.tw/",
+    "priority": 0,
+    "enable": true,
+    "autoEnable": true,
+    "editTime": "2024-07-05T09:16:40.153Z",
+    "pinned": false
+  },
+  {
+    "id": "1720171019224",
+    "title": "測試2",
+    "image": "/uploads/banners/image-1720171019223-450676711.webp",
+    "timeOn": "2024-07-05T17:00",
+    "timeOff": "2024-07-06T17:00",
+    "hyperlink": "https://www.hle.com.tw/",
+    "priority": 0,
+    "enable": true,
+    "autoEnable": true,
+    "editTime": "2024-07-05T09:16:59.224Z",
+    "pinned": false
+  },
+  {
+    "id": "1720171034562",
+    "title": "測試3",
+    "image": "/uploads/banners/image-1720171034561-643213347.webp",
+    "timeOn": "2024-07-05T17:00",
+    "timeOff": "2024-07-06T17:00",
+    "hyperlink": "https://www.hle.com.tw/",
+    "priority": 0,
+    "enable": true,
+    "autoEnable": true,
+    "editTime": "2024-07-05T09:17:14.562Z",
+    "pinned": false
+  },
+  {
+    "id": "1720171052100",
+    "title": "測試4",
+    "image": "/uploads/banners/image-1720171052099-901978039.webp",
+    "timeOn": "2024-07-05T17:00",
+    "timeOff": "2024-07-06T17:00",
+    "hyperlink": "https://www.hle.com.tw/",
+    "priority": 0,
+    "enable": true,
+    "autoEnable": true,
+    "editTime": "2024-07-05T09:17:32.100Z",
+    "pinned": false
+  }
+]
