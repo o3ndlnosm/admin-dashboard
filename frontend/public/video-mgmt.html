@@ -5,41 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>企業影片管理</title>
     <link rel="stylesheet" href="/public/css/video-management.css">
+    <link rel="stylesheet" href="/public/css/notification.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <style>
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.4);
-            padding-top: 60px;
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-        }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-    </style>
 </head>
 <body class="enterprise-videos">
     <header class="enterprise-videos">
@@ -49,7 +16,7 @@
     <main>
         <section class="container">
             <button class="enterprise-videos" onclick="location.href='video-form.html'">新增影片</button>
-            <button class="enterprise-videos" onclick="history.back()">回上一頁</button>
+            <button class="enterprise-videos" onclick="location.href='dashboard.html'">回上一頁</button>
         </section>
         <section id="publish-all-button" class="container" style="display: none;">
             <button onclick="publishAll()" style="color: white; background-color: red;">一鍵上架</button>
@@ -76,12 +43,6 @@
         <nav id="pagination" class="pagination container">
             <!-- 這裡將動態生成分頁按鈕 -->
         </nav>
-        <div id="alert-modal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeModal()">&times;</span>
-                <p id="alert-message">影片已成功上架！</p>
-            </div>
-        </div>
         <!-- 添加視頻模態窗口 -->
         <div id="video-modal" class="modal">
             <div class="modal-content">
@@ -90,7 +51,6 @@
             </div>
         </div>
     </main>
-    <script src="/public/js/video-management.js" defer></script>
+    <script src="/public/js/video-mgmt.js" defer></script>
 </body>
 </html>
-

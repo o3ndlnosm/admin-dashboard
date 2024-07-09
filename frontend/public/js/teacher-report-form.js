@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const id = urlParams.get('id');
 
     if (id) {
-        fetch(`http://localhost:3001/api/reports/${id}`)
+        fetch(`http://localhost:3001/api/teacher-reports/${id}`)
             .then(response => response.json())
             .then(data => {
                 document.getElementById('title').value = data.title;
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('timeOn').value = toDatetimeLocal(new Date(data.timeOn));
                 document.getElementById('timeOff').value = toDatetimeLocal(new Date(data.timeOff));
                 if (data.image) {
-                    document.getElementById('image-preview').src = `http://localhost:3001/uploads/reports/${data.image}`;
+                    document.getElementById('image-preview').src = `http://localhost:3001/uploads/teacher-reports/${data.image}`;
                     document.getElementById('image-upload-section').style.display = 'none';
                     document.getElementById('image-preview-section').style.display = 'block';
                 }
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData(form);
 
         const method = id ? 'PUT' : 'POST';
-        const url = id ? `http://localhost:3001/api/reports/${id}` : 'http://localhost:3001/api/reports';
+        const url = id ? `http://localhost:3001/api/teacher-reports/${id}` : 'http://localhost:3001/api/teacher-reports';
 
         fetch(url, {
             method: method,
@@ -107,8 +107,8 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('報導已成功提交並儲存為 JSON 檔案！');
-                window.location.href = 'report-mgmt.html';
+                alert('老師報導已成功提交並儲存為 JSON 檔案！');
+                window.location.href = 'news-mgmt-teacher.html';
             } else {
                 alert('提交失敗，請重試。');
             }

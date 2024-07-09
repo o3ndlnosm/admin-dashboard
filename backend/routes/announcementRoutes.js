@@ -20,7 +20,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage, limits: { fieldSize: 25 * 1024 * 1024 } });
 
-// 確保文件夾存在
 const ensureDirectoryExistence = (filePath) => {
     const dirname = path.dirname(filePath);
     if (fs.existsSync(dirname)) {
@@ -29,6 +28,7 @@ const ensureDirectoryExistence = (filePath) => {
     ensureDirectoryExistence(dirname);
     fs.mkdirSync(dirname);
 };
+
 
 // SSE 客戶端連接數組
 const clients = new Set();
@@ -199,7 +199,7 @@ router.get('/:id', (req, res) => {
 // 處理公告更新
 router.put('/:id', upload.single('image'), (req, res) => {
     const { id } = req.params;
-    const { title, context, timeOn, timeOff, hyperlink, autoEnable } = req.body;
+    const { title, context, timeOn, timeOff, hyperlink, autoEnable, removeImage } = req.body;
     const image = req.file ? req.file.filename : null;
     const now = new Date();
 
@@ -213,6 +213,8 @@ router.put('/:id', upload.single('image'), (req, res) => {
             return res.status(404).json({ success: false, message: '公告不存在' });
         }
 
+        const oldImage = announcements[announcementIndex].image;
+
         const updatedAnnouncement = {
             ...announcements[announcementIndex],
             title,
@@ -220,7 +222,7 @@ router.put('/:id', upload.single('image'), (req, res) => {
             timeOn: timeOn || announcements[announcementIndex].timeOn,
             timeOff: timeOff || announcements[announcementIndex].timeOff,
             hyperlink: hyperlink || announcements[announcementIndex].hyperlink,
-            image: image || announcements[announcementIndex].image,
+            image: image || (removeImage === 'true' ? null : announcements[announcementIndex].image),
             autoEnable: autoEnable !== undefined ? autoEnable : announcements[announcementIndex].autoEnable, // 更新自動上架狀態
             editTime: now.toISOString() // 更新編輯時間
         };
@@ -238,12 +240,22 @@ router.put('/:id', upload.single('image'), (req, res) => {
                 return res.status(500).json({ success: false, message: '儲存公告時出錯' });
             }
 
+            // 刪除舊的圖片文件
+            if (removeImage === 'true' && oldImage) {
+                fs.unlink(path.join(__dirname, '..', 'uploads', 'announcements', oldImage), (err) => {
+                    if (err) {
+                        console.error('Error deleting image:', err);
+                    }
+                });
+            }
+
             notifyClients({ type: 'update-announcement', data: updatedAnnouncement });
 
             res.json({ success: true, message: '公告已成功更新！' });
         });
     });
 });
+
 
 // 處理公告上下架狀態切換
 router.patch('/:id/enable', (req, res) => {

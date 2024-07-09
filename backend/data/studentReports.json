@@ -1,0 +1,16 @@
+[
+  {
+    "id": "1720520086824",
+    "title": "測試",
+    "context": "測試",
+    "image": "image-1720520086819-750075123.webp",
+    "timeOn": "2024-07-09T18:00",
+    "timeOff": "2024-07-10T18:00",
+    "hyperlink": "https://www.ettoday.net/news/20240418/2705196.htm",
+    "priority": 0,
+    "enable": true,
+    "autoEnable": true,
+    "editTime": "2024-07-09T10:16:40.853Z",
+    "pinned": false
+  }
+]

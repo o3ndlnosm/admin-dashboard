@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
 
         if (!checkTimeValidity()) {
-            return; // 時間無效，阻止表單提交
+            return;
         }
 
         const formData = new FormData(event.target);
@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.success) {
                 alert('影片已成功提交並儲存為 JSON 檔案！');
-                window.location.href = 'video-management.html';
+                window.location.href = 'video-mgmt.html';
             } else {
                 alert('提交失敗，請重試。');
             }

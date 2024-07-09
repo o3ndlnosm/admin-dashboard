@@ -3,13 +3,13 @@
     "id": "1720167840942",
     "title": "相信學習",
     "image": "/uploads/banners/image-1720167840940-388994585.jpg",
-    "timeOn": "2024-07-05T16:00",
-    "timeOff": "2024-07-06T16:00",
+    "timeOn": "2024-07-09T14:00",
+    "timeOff": "2024-07-10T16:00",
     "hyperlink": "https://www.hle.com.tw/",
     "priority": 0,
-    "enable": true,
-    "autoEnable": true,
-    "editTime": "2024-07-05T09:09:51.989Z",
+    "enable": false,
+    "autoEnable": false,
+    "editTime": "2024-07-09T08:29:40.593Z",
     "pinned": false
   },
   {
@@ -20,9 +20,9 @@
     "timeOff": "2024-07-06T17:00",
     "hyperlink": "https://www.hle.com.tw/",
     "priority": 0,
-    "enable": true,
-    "autoEnable": true,
-    "editTime": "2024-07-05T09:16:40.153Z",
+    "enable": false,
+    "autoEnable": false,
+    "editTime": "2024-07-08T01:01:00.344Z",
     "pinned": false
   },
   {
@@ -33,9 +33,9 @@
     "timeOff": "2024-07-06T17:00",
     "hyperlink": "https://www.hle.com.tw/",
     "priority": 0,
-    "enable": true,
-    "autoEnable": true,
-    "editTime": "2024-07-05T09:16:59.224Z",
+    "enable": false,
+    "autoEnable": false,
+    "editTime": "2024-07-08T01:01:00.344Z",
     "pinned": false
   },
   {
@@ -46,9 +46,9 @@
     "timeOff": "2024-07-06T17:00",
     "hyperlink": "https://www.hle.com.tw/",
     "priority": 0,
-    "enable": true,
-    "autoEnable": true,
-    "editTime": "2024-07-05T09:17:14.562Z",
+    "enable": false,
+    "autoEnable": false,
+    "editTime": "2024-07-08T01:01:00.344Z",
     "pinned": false
   },
   {
@@ -59,9 +59,22 @@
     "timeOff": "2024-07-06T17:00",
     "hyperlink": "https://www.hle.com.tw/",
     "priority": 0,
-    "enable": true,
-    "autoEnable": true,
-    "editTime": "2024-07-05T09:17:32.100Z",
+    "enable": false,
+    "autoEnable": false,
+    "editTime": "2024-07-08T01:01:00.344Z",
+    "pinned": false
+  },
+  {
+    "id": "1720418666290",
+    "title": "123",
+    "image": "/uploads/banners/image-1720418666289-579011268.jpg",
+    "timeOn": "2024-07-08T14:00",
+    "timeOff": "2024-07-09T14:00",
+    "hyperlink": "https://www.ettoday.net/news/20240418/2705196.htm",
+    "priority": 0,
+    "enable": false,
+    "autoEnable": false,
+    "editTime": "2024-07-08T06:04:26.290Z",
     "pinned": false
   }
 ]

@@ -1,0 +1,36 @@
+.notification {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #333;
+    color: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.notification.show {
+    opacity: 1;
+}
+
+/* 不同類型的通知顏色 */
+.notification.info {
+    background-color: #007bff;
+}
+
+.notification.success {
+    background-color: #28a745;
+}
+
+.notification.warning {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.notification.error {
+    background-color: #dc3545;
+}

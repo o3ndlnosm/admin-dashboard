@@ -1,4 +1,47 @@
 document.addEventListener('DOMContentLoaded', function() {
+    var quill = new Quill('#editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{ 'header': [1, 2, false] }],
+                ['bold', 'italic', 'underline'],
+                ['image', 'code-block']
+            ]
+        }
+    });
+
+    function imageHandler() {
+        const input = document.createElement('input');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', 'image/*');
+        input.click();
+
+        input.onchange = () => {
+            const file = input.files[0];
+            if (file) {
+                const formData = new FormData();
+                formData.append('upload', file);
+
+                fetch('http://localhost:3001/api/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.uploaded) {
+                        const range = quill.getSelection();
+                        quill.insertEmbed(range.index, 'image', result.url);
+                    } else {
+                        alert('圖片上傳失敗');
+                    }
+                })
+                .catch(() => alert('圖片上傳失敗'));
+            }
+        };
+    }
+
+    quill.getModule('toolbar').addHandler('image', imageHandler);
+
     function toDatetimeLocal(date) {
         const ten = function (i) {
             return (i < 10 ? '0' : '') + i;
@@ -39,28 +82,28 @@ document.addEventListener('DOMContentLoaded', function() {
         return true;
     }
 
-    const form = document.getElementById('report-form');
+    const form = document.getElementById('announcement-form');
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get('id');
 
     if (id) {
-        fetch(`http://localhost:3001/api/reports/${id}`)
+        fetch(`http://localhost:3001/api/announcements/${id}`)
             .then(response => response.json())
             .then(data => {
                 document.getElementById('title').value = data.title;
-                document.getElementById('context').value = data.context;
+                quill.root.innerHTML = data.context;
                 document.getElementById('hyperlink').value = data.hyperlink;
                 document.getElementById('timeOn').value = toDatetimeLocal(new Date(data.timeOn));
                 document.getElementById('timeOff').value = toDatetimeLocal(new Date(data.timeOff));
                 if (data.image) {
-                    document.getElementById('image-preview').src = `http://localhost:3001/uploads/reports/${data.image}`;
+                    document.getElementById('image-preview').src = `http://localhost:3001/uploads/announcements/${data.image}`;
                     document.getElementById('image-upload-section').style.display = 'none';
                     document.getElementById('image-preview-section').style.display = 'block';
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('加載報導時出錯');
+                alert('加載公告時出錯');
             });
     } else {
         setDefaultTimes();
@@ -96,9 +139,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         const formData = new FormData(form);
+        const editorContent = quill.root.innerHTML;
+        formData.set('context', editorContent);
 
         const method = id ? 'PUT' : 'POST';
-        const url = id ? `http://localhost:3001/api/reports/${id}` : 'http://localhost:3001/api/reports';
+        const url = id ? `http://localhost:3001/api/announcements/${id}` : 'http://localhost:3001/api/announcements';
 
         fetch(url, {
             method: method,
@@ -107,8 +152,8 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('報導已成功提交並儲存為 JSON 檔案！');
-                window.location.href = 'report-mgmt.html';
+                alert('公告已成功提交並儲存為 JSON 檔案！');
+                window.location.href = 'ann-mgmt.html';
             } else {
                 alert('提交失敗，請重試。');
             }

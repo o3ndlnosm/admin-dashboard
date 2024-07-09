@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>企業相關</title>
+    <link rel="stylesheet" href="/public/css/ann-mgmt.css">
+    <link rel="stylesheet" href="/public/css/notification.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>公告管理-企業相關</h1>
+        <h2>預設編輯時間排序，新的在上</h2>
+    </header>
+    <main>
+        <section class="container">
+            <button onclick="location.href='ann-form.html'">新增</button>
+            <button onclick="location.href='dashboard.html'">回上一頁</button>
+        </section>
+        <section id="publish-all-button" class="container" style="display: none;">
+            <button onclick="publishAll()" style="color: white; background-color: red;">一鍵上架</button>
+        </section>
+        <section id="messages" class="container"></section>
+        <section id="loading" class="container" style="display:none;">載入中...</section>
+        <section class="container">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">排定上架</th>
+                        <th scope="col" onclick="sortAnnouncements('status')">狀態</th>
+                        <th scope="col">公告標題</th>
+                        <th scope="col">上架時間</th>
+                        <th scope="col">下架時間</th>
+                        <th scope="col">封面縮圖</th>
+                    </tr>
+                </thead>
+                <tbody id="announcements-body">
+                    <!-- 這裡將動態生成公告內容 -->
+                </tbody>
+            </table>
+        </section>
+        <nav id="pagination" class="pagination container">
+            <!-- 這裡將動態生成分頁按鈕 -->
+        </nav>
+    </main>
+    <script src="/public/js/ann-mgmt.js" defer></script>
+</body>
+</html>

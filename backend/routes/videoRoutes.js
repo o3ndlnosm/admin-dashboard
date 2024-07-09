@@ -3,11 +3,14 @@ const router = express.Router();
 const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
+const cron = require('node-cron');
 
 // 設置 multer 以處理封面縮圖上傳
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/');
+        const dir = 'uploads/videos/';
+        ensureDirectoryExistence(dir);
+        cb(null, dir);
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -17,7 +20,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage, limits: { fieldSize: 25 * 1024 * 1024 } });
 
-// 確保文件夾存在
 const ensureDirectoryExistence = (filePath) => {
     const dirname = path.dirname(filePath);
     if (fs.existsSync(dirname)) {
@@ -30,11 +32,12 @@ const ensureDirectoryExistence = (filePath) => {
 // SSE 客戶端連接數組
 const clients = new Set();
 
+// SSE 端點
 router.get('/events', (req, res) => {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
-    res.flushHeaders();
+    res.flushHeaders(); // 立即發送標頭
 
     clients.add(res);
 
@@ -75,6 +78,48 @@ const writeVideos = (videos, callback) => {
     const filePath = path.join(__dirname, '..', 'data', 'videos.json');
     fs.writeFile(filePath, JSON.stringify(videos, null, 2), callback);
 };
+
+// 定時任務檢查和更新影片狀態
+cron.schedule('* * * * *', () => { // 每分鐘檢查一次
+    readVideos((err, videos) => {
+        if (err) {
+            console.error('Error reading videos:', err);
+            return;
+        }
+
+        const now = new Date();
+        let updated = false;
+
+        videos = videos.map(video => {
+            let changed = false;
+            if (new Date(video.timeOn) <= now && video.autoEnable && !video.enable) {
+                video.enable = true;
+                changed = true;
+            }
+            if (new Date(video.timeOff) <= now && video.enable) {
+                video.enable = false;
+                video.autoEnable = false; // 更新 autoEnable 狀態
+                changed = true;
+            }
+            if (changed) {
+                video.updatedAt = now.toISOString();
+                updated = true;
+                notifyClients({ type: 'update-video', data: video });
+            }
+            return video;
+        });
+
+        if (updated) {
+            writeVideos(videos, (err) => {
+                if (err) {
+                    console.error('Error saving videos:', err);
+                } else {
+                    console.log('Videos updated based on schedule.');
+                }
+            });
+        }
+    });
+});
 
 // 新增影片
 router.post('/', upload.single('image'), (req, res) => {
@@ -206,6 +251,111 @@ router.put('/:id', upload.single('image'), (req, res) => {
             notifyClients({ type: 'update-video', data: updatedVideo });
 
             res.json({ success: true, message: '影片已成功更新！' });
+        });
+    });
+});
+
+// 處理影片上下架狀態切換
+router.patch('/:id/enable', (req, res) => {
+    const { id } = req.params;
+    const { autoEnable, enable } = req.body;
+
+    readVideos((err, videos) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: '讀取影片數據時出錯' });
+        }
+
+        let videoIndex = videos.findIndex(v => v.id === id);
+        if (videoIndex === -1) {
+            return res.status(404).json({ success: false, message: '影片不存在' });
+        }
+
+        videos[videoIndex].autoEnable = autoEnable;
+        videos[videoIndex].enable = enable;
+
+        writeVideos(videos, (err) => {
+            if (err) {
+                console.error('Error updating video autoEnable status:', err);
+                return res.status(500).json({ success: false, message: '更新影片自動上架狀態時出錯' });
+            }
+
+            notifyClients({ type: 'update-video', data: videos[videoIndex] });
+
+            res.json({ success: true, message: '影片自動上架狀態已更新！' });
+        });
+    });
+});
+
+// 處理一鍵安排上架請求
+router.patch('/schedule-all', (req, res) => {
+    const { ids, autoEnable } = req.body;
+    readVideos((err, videos) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: '讀取影片數據時出錯' });
+        }
+
+        let updated = false;
+        const now = new Date();
+
+        videos = videos.map(video => {
+            if (ids.includes(video.id)) {
+                video.autoEnable = autoEnable; // 設置自動上架
+                if (new Date(video.timeOn) <= now) {
+                    video.enable = true;
+                }
+                updated = true;
+            }
+            return video;
+        });
+
+        if (updated) {
+            writeVideos(videos, (err) => {
+                if (err) {
+                    console.error('Error saving videos:', err);
+                    return res.status(500).json({ success: false, message: '儲存影片時出錯' });
+                }
+
+                // 發送 SSE 通知
+                videos.forEach(video => {
+                    if (ids.includes(video.id)) {
+                        notifyClients({ type: 'update-video', data: video });
+                    }
+                });
+
+                res.json({ success: true, message: '所有影片已排定自動上架！' });
+            });
+        } else {
+            res.json({ success: true, message: '沒有影片需要更新。' });
+        }
+    });
+});
+
+// 處理影片置頂狀態切換
+router.patch('/:id/pin', (req, res) => {
+    const { id } = req.params;
+    const { pinned } = req.body;
+
+    readVideos((err, videos) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: '讀取影片數據時出錯' });
+        }
+
+        let videoIndex = videos.findIndex(v => v.id === id);
+        if (videoIndex === -1) {
+            return res.status(404).json({ success: false, message: '影片不存在' });
+        }
+
+        videos[videoIndex].pinned = pinned;
+
+        writeVideos(videos, (err) => {
+            if (err) {
+                console.error('Error updating video pinned status:', err);
+                return res.status(500).json({ success: false, message: '更新影片置頂狀態時出錯' });
+            }
+
+            notifyClients({ type: 'update-video', data: videos[videoIndex] });
+
+            res.json({ success: true, message: '影片置頂狀態已更新！' });
         });
     });
 });

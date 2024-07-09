@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>企業 Banner 管理</title>
+    <title>學生新聞管理</title>
     <link rel="stylesheet" href="/public/css/banner-management.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="/public/css/notification.css">
 </head>
 <body class="enterprise-banners">
     <header class="enterprise-banners">
         <h1>BANNER</h1>
-        <h2>翰林集團形象輪播</h2>
+        <h2>學生新聞輪播</h2>
     </header>
     <main>
         <section class="container">
-            <button class="enterprise-banners" onclick="location.href='banner-form.html'">新增 Banner</button>
-            <button class="enterprise-banners" onclick="history.back()">回上一頁</button>
+            <button class="enterprise-banners" onclick="location.href='student-report-form.html'">新增 學生新聞</button>
+            <button class="enterprise-banners" onclick="location.href='dashboard.html'">回上一頁</button>
         </section>
         <section id="publish-all-button" class="container" style="display: none;">
             <button onclick="publishAll()" style="color: white; background-color: red;">一鍵上架</button>
@@ -34,8 +35,8 @@
                         <th scope="col">封面</th>
                     </tr>
                 </thead>
-                <tbody id="banners-body">
-                    <!-- 這裡將動態生成 Banner 內容 -->
+                <tbody id="reports-body">
+                    <!-- 這裡將動態生成報導內容 -->
                 </tbody>
             </table>
         </section>
@@ -49,6 +50,6 @@
             </div>
         </div>
     </main>
-    <script src="/public/js/banner-management.js" defer></script>
+    <script src="/public/js/student-report.js" defer></script>
 </body>
 </html>

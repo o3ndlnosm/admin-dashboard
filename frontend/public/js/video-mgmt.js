@@ -4,67 +4,64 @@ let videosData = [];
 
 // 更新自動上架和狀態
 const updateAutoEnableAndStatus = async (videoId, newAutoEnable, newEnable) => {
-  const response = await fetch(`http://localhost:3001/api/videos/${videoId}/enable`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ autoEnable: newAutoEnable, enable: newEnable }),
-  });
-  return response;
+  try {
+    const response = await fetch(`http://localhost:3001/api/videos/${videoId}/enable`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ autoEnable: newAutoEnable, enable: newEnable }),
+    });
+
+    if (!response.ok) throw new Error("Network response was not ok");
+
+    console.log("更新成功:", videoId, newAutoEnable, newEnable);
+    showNotification("更新成功", "success");
+    return true;
+  } catch (error) {
+    console.error("更新失敗:", videoId, newAutoEnable, newEnable, error);
+    showNotification("更新失敗", "error");
+    return false;
+  }
 };
 
-// 切換自動上架
+// 切換自動上架狀態
 const toggleAutoEnable = async (videoId, currentAutoEnable, timeOn, timeOff, isDown) => {
   const now = new Date();
   const isCurrentlyUp = new Date(timeOn) <= now && new Date(timeOff) > now;
 
   if (isDown) {
-    alert("此影片已下架，請重新編輯影片以重新上架。");
+    showNotification("此影片已下架，請重新編輯影片以重新上架。", "warning");
     document.getElementById(`switch-${videoId}`).checked = false;
     return;
   }
 
   const newAutoEnable = !currentAutoEnable;
-  let action, additionalMessage;
-
-  if (newAutoEnable) {
-    action = "開啟自動上架";
-    additionalMessage = new Date(timeOn) <= now
-      ? "此影片的上架時間已到，開啟自動上架功能將立即上架此影片，是否繼續？"
-      : "開啟自動上架功能將在上架時間到達時自動上架此影片，是否繼續？";
-  } else {
-    action = "關閉自動上架";
-    additionalMessage = isCurrentlyUp
-      ? "此影片目前已上架，關閉自動上架功能將會下架此影片，是否繼續？"
-      : "此影片目前尚未上架，關閉自動上架功能將取消其自動上架，是否繼續？";
-  }
-
-  if (!confirm(`${action} ${additionalMessage}`)) {
-    document.getElementById(`switch-${videoId}`).checked = currentAutoEnable;
-    return;
-  }
-
   const newEnable = newAutoEnable ? true : false;
 
-  try {
-    const success = await updateAutoEnableAndStatus(videoId, newAutoEnable, newEnable);
-    if (success) {
-      loadVideos(currentPage);
-      if (!newAutoEnable && isCurrentlyUp) {
-        showAlert("影片已下架");
-      } else if (!newAutoEnable && !isCurrentlyUp) {
-        showAlert("影片的自動上架功能已關閉");
-      } else if (newAutoEnable && new Date(timeOn) <= now) {
-        showAlert("影片已立即上架");
-      }
-    } else {
-      throw new Error("Network response was not ok");
+  const success = await updateAutoEnableAndStatus(videoId, newAutoEnable, newEnable);
+  if (success) {
+    if (!newAutoEnable) {
+      removeEditedVideo(videoId); // 移除已编辑的影片ID
     }
-  } catch (error) {
-    console.error("Error:", error);
-    alert("更新自動上架狀態時出錯");
+    handleAutoEnableChange(videoId, newAutoEnable, isCurrentlyUp, now, timeOn);
+  } else {
     document.getElementById(`switch-${videoId}`).checked = currentAutoEnable;
+  }
+};
+
+// 處理自動上架變更
+const handleAutoEnableChange = (videoId, newAutoEnable, isCurrentlyUp, now, timeOn) => {
+  loadVideos(currentPage);
+  showAlertBasedOnAutoEnable(newAutoEnable, isCurrentlyUp, now, timeOn);
+};
+
+// 顯示根據自動上架狀態的提示訊息
+const showAlertBasedOnAutoEnable = (newAutoEnable, isCurrentlyUp, now, timeOn) => {
+  if (!newAutoEnable && isCurrentlyUp) {
+    showNotification("影片已下架", "info");
+  } else if (!newAutoEnable && !isCurrentlyUp) {
+    showNotification("影片的自動上架功能已關閉", "info");
+  } else if (newAutoEnable && new Date(timeOn) <= now) {
+    showNotification("影片已立即上架", "success");
   }
 };
 
@@ -76,39 +73,64 @@ const saveEditedVideo = (videoId) => {
   }
 };
 
+// 移除已編輯的影片
+const removeEditedVideo = (videoId) => {
+  editedVideos = editedVideos.filter(id => id !== videoId);
+  localStorage.setItem("editedVideos", JSON.stringify(editedVideos));
+};
+
 // 渲染影片行
 const renderVideoRow = (video) => {
   const row = document.createElement("tr");
 
+  row.appendChild(createAutoEnableCell(video));
+  row.appendChild(createStatusCell(video));
+  row.appendChild(createTitleCell(video));
+  row.appendChild(createVideoPreviewCell(video)); // 影片預覽按鈕放在標題後面
+  row.appendChild(createTimeCell(video.timeOn));
+  row.appendChild(createTimeCell(video.timeOff));
+
+  return row;
+};
+
+// 創建自動上架單元格
+const createAutoEnableCell = (video) => {
   const autoEnableCell = document.createElement("td");
   const switchLabel = document.createElement("label");
   switchLabel.classList.add("switch");
+
   const autoEnableSwitch = document.createElement("input");
   autoEnableSwitch.type = "checkbox";
   autoEnableSwitch.checked = video.autoEnable;
   autoEnableSwitch.id = `switch-${video.id}`;
+
   const now = new Date();
   const timeOnDate = new Date(video.timeOn);
   const timeOffDate = new Date(video.timeOff);
   const isDown = timeOffDate <= now;
+
   autoEnableSwitch.onchange = () =>
-    toggleAutoEnable(
-      video.id,
-      video.autoEnable,
-      video.timeOn,
-      video.timeOff,
-      isDown
-    );
+    toggleAutoEnable(video.id, video.autoEnable, video.timeOn, video.timeOff, isDown);
+
   const sliderSpan = document.createElement("span");
   sliderSpan.classList.add("slider");
+
   switchLabel.appendChild(autoEnableSwitch);
   switchLabel.appendChild(sliderSpan);
   autoEnableCell.appendChild(switchLabel);
-  row.appendChild(autoEnableCell);
 
+  return autoEnableCell;
+};
+
+// 創建狀態單元格
+const createStatusCell = (video) => {
   const statusCell = document.createElement("td");
   const statusSpan = document.createElement("span");
   statusSpan.classList.add("status-box");
+
+  const now = new Date();
+  const timeOnDate = new Date(video.timeOn);
+  const timeOffDate = new Date(video.timeOff);
 
   if (timeOffDate <= now) {
     statusSpan.classList.add("status-unpublished");
@@ -116,22 +138,22 @@ const renderVideoRow = (video) => {
     video.autoEnable = false;
   } else if (!video.autoEnable) {
     statusSpan.classList.add("status-default");
-    statusSpan.textContent = " 未排定自動上架";
+    statusSpan.textContent = "待確認";
   } else if (video.autoEnable && timeOnDate > now) {
+    const formattedDate = formatDate(timeOnDate);
     statusSpan.classList.add("status-scheduled");
-    statusSpan.textContent = " 未上架";
+    statusSpan.textContent = ` ${formattedDate} 上架`;
   } else if (video.enable && timeOffDate > now) {
     statusSpan.classList.add("status-published");
-    statusSpan.textContent = " 已上架";
+    statusSpan.textContent = "上架中";
   }
   statusCell.appendChild(statusSpan);
 
   if (video.enable || (video.autoEnable && timeOnDate > now)) {
     const pinButton = document.createElement("button");
     pinButton.classList.add("pin-button");
-    if (video.pinned) {
-      pinButton.classList.add("pinned");
-    }
+    if (video.pinned) pinButton.classList.add("pinned");
+
     const pinIcon = document.createElement("i");
     pinIcon.classList.add("fas", "fa-thumbtack");
     pinButton.appendChild(pinIcon);
@@ -139,50 +161,57 @@ const renderVideoRow = (video) => {
     statusCell.appendChild(pinButton);
   }
 
-  row.appendChild(statusCell);
+  return statusCell;
+};
 
+// 格式化日期為 mm/dd 格式
+const formatDate = (date) => {
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // 月份從 0 開始，因此需要 +1
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${month}/${day}`;
+};
+
+// 創建標題單元格
+const createTitleCell = (video) => {
   const titleCell = document.createElement("td");
   const titleLink = document.createElement("a");
   titleLink.href = `video-form.html?id=${video.id}`;
   titleLink.textContent = video.title;
+
   titleLink.onclick = async (event) => {
     event.preventDefault();
-    if (video.autoEnable) {
-      try {
-        const response = await updateAutoEnableAndStatus(video.id, false, false);
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        loadVideos(currentPage);
-      } catch (error) {
-        console.error("Error:", error);
-        alert("關閉自動上架狀態時出錯");
+    try {
+      if (video.autoEnable) {
+        const success = await updateAutoEnableAndStatus(video.id, false, false);
+        if (!success) throw new Error("關閉自動上架狀態時出錯");
       }
+      saveEditedVideo(video.id);
+      window.location.href = titleLink.href;
+    } catch (error) {
+      console.error("錯誤:", error);
+      showNotification("關閉自動上架狀態時出錯", "error");
     }
-
-    saveEditedVideo(video.id);
-
-    window.location.href = titleLink.href;
   };
-  titleCell.appendChild(titleLink);
-  row.appendChild(titleCell);
 
+  titleCell.appendChild(titleLink);
+  return titleCell;
+};
+
+// 創建時間單元格
+const createTimeCell = (time) => {
+  const timeCell = document.createElement("td");
+  timeCell.textContent = time;
+  return timeCell;
+};
+
+// 創建影片預覽單元格
+const createVideoPreviewCell = (video) => {
   const videoPreviewCell = document.createElement("td");
   const playButton = document.createElement("button");
   playButton.textContent = "播放";
   playButton.onclick = () => showVideoModal(video.videoLink);
   videoPreviewCell.appendChild(playButton);
-  row.appendChild(videoPreviewCell);
-
-  const timeOnCell = document.createElement("td");
-  timeOnCell.textContent = video.timeOn;
-  row.appendChild(timeOnCell);
-
-  const timeOffCell = document.createElement("td");
-  timeOffCell.textContent = video.timeOff;
-  row.appendChild(timeOffCell);
-
-  return row;
+  return videoPreviewCell;
 };
 
 // 顯示視頻模態窗口
@@ -217,12 +246,13 @@ const pinVideo = async (videoId, pinButton) => {
     if (data.success) {
       pinButton.classList.toggle("pinned", pinned);
       loadVideos(currentPage); // 重新加載影片列表，以反映更改
+      showNotification("更新置頂狀態成功", "success");
     } else {
-      alert("更新置頂狀態時出錯");
+      showNotification("更新置頂狀態時出錯", "error");
     }
   } catch (error) {
     console.error("Error:", error);
-    alert("更新置頂狀態時出錯");
+    showNotification("更新置頂狀態時出錯", "error");
   }
 };
 
@@ -274,16 +304,12 @@ const loadVideos = async (page = 1) => {
     }
   } catch (error) {
     console.error("Error:", error);
-    alert("加載影片時出錯");
+    showNotification("加載影片時出錯", "error");
   }
 };
 
 // 一鍵上架
 const publishAll = async () => {
-  if (!confirm("您確定要一鍵安排上架所有編輯過的影片嗎？")) {
-    return;
-  }
-
   const now = new Date();
   const videosToPublish = editedVideos.filter((id) => {
     const video = videosData.find((v) => v.id === id);
@@ -293,38 +319,46 @@ const publishAll = async () => {
   try {
     const response = await fetch("http://localhost:3001/api/videos/schedule-all", {
       method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ids: videosToPublish, autoEnable: true }),
     });
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
+    if (!response.ok) throw new Error("Network response was not ok");
+
     const numberOfPublishedVideos = videosToPublish.length;
     editedVideos = [];
     localStorage.removeItem("editedVideos");
     document.getElementById("publish-all-button").style.display = "none";
-    showAlert(`已排定 ${numberOfPublishedVideos} 影片自動上架！`);
+    showNotification(`已排定 ${numberOfPublishedVideos} 影片自動上架！`, "success");
     loadVideos(currentPage);
   } catch (error) {
     console.error("Error:", error);
-    alert("一鍵安排上架時出錯");
+    showNotification("一鍵安排上架時出錯", "error");
   }
 };
 
 // 顯示提示訊息
-const showAlert = (message) => {
-  const alertModal = document.getElementById("alert-modal");
-  const alertMessage = document.getElementById("alert-message");
-  alertMessage.textContent = message;
-  alertModal.style.display = "block";
-};
+const showNotification = (message, type = "info") => {
+  // 移除已有的通知（如果存在）
+  const existingNotification = document.querySelector(".notification.show");
+  if (existingNotification) {
+    existingNotification.classList.remove('show');
+    setTimeout(() => existingNotification.remove(), 500);
+  }
 
-// 關閉模態窗口
-const closeModal = () => {
-  const alertModal = document.getElementById("alert-modal");
-  alertModal.style.display = "none";
+  // 創建新的通知
+  const notification = document.createElement("div");
+  notification.className = `notification ${type}`;
+  notification.textContent = message;
+  document.body.appendChild(notification);
+
+  // 延時顯示動畫
+  setTimeout(() => notification.classList.add('show'), 10);
+
+  // 延時移除通知
+  setTimeout(() => {
+    notification.classList.remove('show');
+    setTimeout(() => notification.remove(), 500); // 等待動畫結束再移除
+  }, 3000);
 };
 
 // DOM 加載後初始化

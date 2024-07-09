@@ -13,13 +13,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function setDefaultTimes() {
         const now = new Date();
-        now.setMinutes(0, 0, 0); // 將分鐘和秒設為00
+        now.setMinutes(0, 0, 0);
         const oneDayLater = new Date(now.getTime() + 24 * 60 * 60 * 1000);
 
         const timeOn = document.getElementById('timeOn');
         const timeOff = document.getElementById('timeOff');
         
-        // 只對下架時間設置最小值
         timeOff.min = toDatetimeLocal(now);
 
         timeOn.value = toDatetimeLocal(now);
@@ -32,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (timeOff <= timeOn) {
             alert('下架時間必須晚於上架時間。');
-            document.getElementById('timeOff').focus(); // 設置焦點到下架時間輸入框
+            document.getElementById('timeOff').focus();
             return false;
         }
 
@@ -44,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const id = urlParams.get('id');
 
     if (id) {
-        fetch(`http://localhost:3001/api/reports/${id}`)
+        fetch(`http://localhost:3001/api/student-reports/${id}`)
             .then(response => response.json())
             .then(data => {
                 document.getElementById('title').value = data.title;
@@ -53,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('timeOn').value = toDatetimeLocal(new Date(data.timeOn));
                 document.getElementById('timeOff').value = toDatetimeLocal(new Date(data.timeOff));
                 if (data.image) {
-                    document.getElementById('image-preview').src = `http://localhost:3001/uploads/reports/${data.image}`;
+                    document.getElementById('image-preview').src = `http://localhost:3001/uploads/student-reports/${data.image}`;
                     document.getElementById('image-upload-section').style.display = 'none';
                     document.getElementById('image-preview-section').style.display = 'block';
                 }
@@ -92,13 +91,13 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
 
         if (!checkTimeValidity()) {
-            return; // 時間無效，阻止表單提交
+            return;
         }
 
         const formData = new FormData(form);
 
         const method = id ? 'PUT' : 'POST';
-        const url = id ? `http://localhost:3001/api/reports/${id}` : 'http://localhost:3001/api/reports';
+        const url = id ? `http://localhost:3001/api/student-reports/${id}` : 'http://localhost:3001/api/student-reports';
 
         fetch(url, {
             method: method,
@@ -108,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.success) {
                 alert('報導已成功提交並儲存為 JSON 檔案！');
-                window.location.href = 'report-mgmt.html';
+                window.location.href = 'student-report.html';
             } else {
                 alert('提交失敗，請重試。');
             }

@@ -53,12 +53,11 @@ button {
     margin: 5px;
     border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.2s ease, transform 0.2s ease;
+    transition: background-color 0.2s ease;
 }
 
 button:hover {
     background-color: #218838;
-    transform: scale(1.05);
 }
 
 table {
@@ -81,11 +80,10 @@ th {
 }
 
 tbody tr {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: box-shadow 0.3s ease;
 }
 
 tbody tr:hover {
-    transform: scale(1.05);
     box-shadow: var(--table-shadow);
     background-color: #f1f1f1; /* 增加背景色變化 */
 }
@@ -172,7 +170,7 @@ input:checked + .slider:before {
 }
 
 .status-default {
-    background-color: #6c757d; /* 中灰色 */
+    background-color: var(--primary-color); /* 藍色 */
 }
 
 .status-published {
@@ -184,49 +182,7 @@ input:checked + .slider:before {
 }
 
 .status-scheduled {
-    background-color: var(--primary-color); /* 藍色 */
-}
-
-/* 模態窗口樣式 */
-.modal {
-    display: none; /* 預設隱藏 */
-    position: fixed; /* 固定位置 */
-    z-index: 1000; /* 確保位於頂層 */
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto; /* 允許滾動 */
-    background-color: var(--modal-bg-color); /* 背景遮罩 */
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto; /* 中心顯示 */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* 宽度 */
-    max-width: 600px; /* 最大寬度 */
-    border-radius: 10px;
-}
-
-.modal-content p {
-    font-size: 18px;
-    margin: 0;
-}
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+    background-color: #ffc107;
 }
 
 /* 置頂按鈕樣式 */
@@ -236,7 +192,7 @@ input:checked + .slider:before {
     cursor: pointer;
     font-size: 20px; /* 調整按鈕大小 */
     margin-left: 20px; /* 根據需要調整間距 */
-    transition: color 0.3s ease, transform 0.3s ease;
+    transition: color 0.3s ease;
     padding: 0; /* 移除內間距 */
 }
 
@@ -249,6 +205,34 @@ input:checked + .slider:before {
 }
 
 .pin-button:hover {
-    transform: scale(1.2); /* 添加縮放效果 */
     color: var(--hover-color) !important; /* 確保懸停時顏色變化 */
 }
+
+  th#status-header {
+    cursor: pointer;
+}
+
+th#status-header.sorted-asc {
+    background-color: #d1ecf1; /* 輕微藍色背景 */
+}
+
+th#status-header.sorted-desc {
+    background-color: #cce5ff; /* 更深藍色背景 */
+}
+th#status-header:hover::after {
+    content: "點擊以依據狀態排序";
+    position: absolute;
+    background-color: #000;
+    color: #fff;
+    padding: 5px;
+    border-radius: 3px;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    z-index: 1000;
+}
+tbody {
+    transition: opacity 0.5s ease;
+}
+

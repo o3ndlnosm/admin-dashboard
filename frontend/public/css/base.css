@@ -1,0 +1,50 @@
+/* base.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--default-bg-color);
+    margin: 0;
+    padding: 20px;
+}
+
+a {
+    text-decoration: none;
+    color: var(--primary-color);
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+h1, h2 {
+    text-align: center;
+    margin: 0;
+    padding: 10px 0;
+}
+
+h1 {
+    color: var(--default-text-color);
+}
+
+h2 {
+    color: #666;
+}
+
+.container {
+    margin: 20px 0;
+    text-align: center;
+}
+
+button {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+button:hover {
+    background-color: #218838;
+}

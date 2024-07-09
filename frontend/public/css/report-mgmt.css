@@ -1,0 +1,20 @@
+/* enterprise-reports.css */
+body.enterprise-reports {
+    background-color: #f9f9e3; /* 淺黃色背景 */
+}
+
+header.enterprise-reports h1 {
+    color: #705100; /* 深棕色標題 */
+}
+
+header.enterprise-reports h2 {
+    color: #a88702; /* 黃色副標題 */
+}
+
+button.enterprise-reports {
+    background-color: #a88702; /* 黃色按鈕 */
+}
+
+button.enterprise-reports:hover {
+    background-color: #705100; /* 深棕色懸停狀態 */
+}

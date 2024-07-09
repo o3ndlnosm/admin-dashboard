@@ -1,0 +1,20 @@
+/* pagination.css */
+.pagination button {
+    margin: 0 2px;
+    padding: 5px 10px;
+    border: none;
+    background-color: #e0e0e0;
+    cursor: pointer;
+    color: var(--default-text-color);
+    transition: background-color 0.2s ease;
+}
+
+.pagination button:hover {
+    background-color: #c0c0c0;
+}
+
+.pagination .current-page {
+    font-weight: bold;
+    background-color: #004085;
+    color: white;
+}

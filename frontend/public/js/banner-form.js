@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.success) {
                 alert('Banner 已成功提交並儲存為 JSON 檔案！');
-                window.location.href = 'banner-management.html';
+                window.location.href = 'banner-mgmt-hanlin.html';
             } else {
                 alert('提交失敗，請重試。');
             }

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>企業 Banner 管理</title>
+    <link rel="stylesheet" href="/public/css/banner-management.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body class="enterprise-banners">
+    <header class="enterprise-banners">
+        <h1>BANNER</h1>
+        <h2>翰林集團形象輪播</h2>
+    </header>
+    <main>
+        <section class="container">
+            <button class="enterprise-banners" onclick="location.href='banner-form.html'">新增 Banner</button>
+            <button class="enterprise-banners" onclick="history.back()">回上一頁</button>
+        </section>
+        <section id="publish-all-button" class="container" style="display: none;">
+            <button onclick="publishAll()" style="color: white; background-color: red;">一鍵上架</button>
+        </section>
+        <section id="messages" class="container"></section>
+        <section id="loading" class="container" style="display:none;">載入中...</section>
+        <section class="container">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">排定上架</th>
+                        <th scope="col">狀態</th>
+                        <th scope="col">標題</th>
+                        <th scope="col">上架時間</th>
+                        <th scope="col">下架時間</th>
+                        <th scope="col">封面</th>
+                    </tr>
+                </thead>
+                <tbody id="banners-body">
+                    <!-- 這裡將動態生成 Banner 內容 -->
+                </tbody>
+            </table>
+        </section>
+        <nav id="pagination" class="pagination container">
+            <!-- 這裡將動態生成分頁按鈕 -->
+        </nav>
+        <div id="alert-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <p id="alert-message">Banner 已成功上架！</p>
+            </div>
+        </div>
+    </main>
+    <script type="module" src="/public/js/banner-mgmt.js" defer></script>
+</body>
+</html>
