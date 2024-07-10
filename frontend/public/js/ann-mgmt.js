@@ -39,23 +39,24 @@ const toggleAutoEnable = async (announcementId, currentAutoEnable, timeOn, timeO
 
   const success = await updateAutoEnableAndStatus(announcementId, newAutoEnable, newEnable);
   if (success) {
-    handleAutoEnableChange(announcementId, newAutoEnable, isCurrentlyUp, now, timeOn);
+    handleAutoEnableChange(announcementId, newAutoEnable, isCurrentlyUp, now, timeOn, true);
   } else {
     document.getElementById(`switch-${announcementId}`).checked = currentAutoEnable;
   }
 };
 
 // 處理自動上架變更
-const handleAutoEnableChange = (announcementId, newAutoEnable, isCurrentlyUp, now, timeOn) => {
+const handleAutoEnableChange = (announcementId, newAutoEnable, isCurrentlyUp, now, timeOn, isManualToggle = false) => {
   if (newAutoEnable) {
     editedAnnouncements = editedAnnouncements.filter(id => id !== announcementId);
     localStorage.setItem("editedAnnouncements", JSON.stringify(editedAnnouncements));
-  } else {
+  } else if (!isManualToggle) { // 只有在不是手動關閉時才保存
     saveEditedAnnouncement(announcementId);
   }
   loadAnnouncements(currentPage);
   showAlertBasedOnAutoEnable(newAutoEnable, isCurrentlyUp, now, timeOn);
 };
+
 
 // 顯示根據自動上架狀態的提示訊息
 const showAlertBasedOnAutoEnable = (newAutoEnable, isCurrentlyUp, now, timeOn) => {

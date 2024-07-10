@@ -46,13 +46,13 @@
     "title": "測試123",
     "context": "測試123",
     "image": "image-1720418044667-804672868.jpg",
-    "timeOn": "2024-07-08T13:00",
-    "timeOff": "2024-07-09T13:00",
+    "timeOn": "2024-07-10T13:00",
+    "timeOff": "2024-07-11T13:00",
     "hyperlink": "https://www.ettoday.net/news/20240418/2705196.htm",
     "priority": 0,
     "enable": false,
-    "autoEnable": false,
-    "editTime": "2024-07-09T05:00:00.202Z",
+    "autoEnable": true,
+    "editTime": "2024-07-10T02:28:11.584Z",
     "pinned": true
   },
   {
@@ -94,7 +94,7 @@
     "priority": 0,
     "enable": true,
     "autoEnable": true,
-    "editTime": "2024-07-09T03:05:08.350Z",
+    "editTime": "2024-07-10T02:06:50.492Z",
     "pinned": false
   }
 ]

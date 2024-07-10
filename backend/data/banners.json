@@ -9,7 +9,7 @@
     "priority": 0,
     "enable": false,
     "autoEnable": false,
-    "editTime": "2024-07-09T08:29:40.593Z",
+    "editTime": "2024-07-10T01:36:31.205Z",
     "pinned": false
   },
   {
@@ -68,13 +68,13 @@
     "id": "1720418666290",
     "title": "123",
     "image": "/uploads/banners/image-1720418666289-579011268.jpg",
-    "timeOn": "2024-07-08T14:00",
-    "timeOff": "2024-07-09T14:00",
+    "timeOn": "2024-07-10T14:00",
+    "timeOff": "2024-07-11T14:00",
     "hyperlink": "https://www.ettoday.net/news/20240418/2705196.htm",
     "priority": 0,
     "enable": false,
-    "autoEnable": false,
-    "editTime": "2024-07-08T06:04:26.290Z",
+    "autoEnable": true,
+    "editTime": "2024-07-10T02:27:08.980Z",
     "pinned": false
   }
 ]
